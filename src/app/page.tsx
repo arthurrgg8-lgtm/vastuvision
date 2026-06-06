@@ -289,8 +289,8 @@ export default function Home() {
   // --- Core State ---
   const [activeLanguage, setActiveLanguage] = useState<"english" | "nepali">("english");
   const [showLanding, setShowLanding] = useState(true);
-  const [hudPhase, setHudPhase] = useState(0);
-  const [hudComplianceScore, setHudComplianceScore] = useState(40);
+  const [splashProgress, setSplashProgress] = useState(0);
+  const [splashStatus, setSplashStatus] = useState("Initializing Vastu Shastra Engine...");
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
   const [selectedRoom, setSelectedRoom] = useState<RoomType | null>(null);
   
@@ -571,34 +571,55 @@ export default function Home() {
     }
   }, [currentStep, analysisResult]);
 
-  // --- Landing HUD Animation Effect ---
+  // --- Fullscreen Splash Loader Effect ---
   useEffect(() => {
     if (!showLanding) return;
-    const interval = setInterval(() => {
-      setHudPhase((prev) => (prev + 1) % 4);
-    }, 4500);
-    return () => clearInterval(interval);
-  }, [showLanding]);
+    
+    const duration = 3000; // 3 seconds
+    const intervalTime = 30; // 30ms step
+    const totalSteps = duration / intervalTime;
+    const step = 100 / totalSteps;
+    
+    let current = 0;
+    const progressTimer = setInterval(() => {
+      current += step;
+      if (current >= 100) {
+        current = 100;
+        clearInterval(progressTimer);
+        setTimeout(() => {
+          setShowLanding(false);
+        }, 500);
+      }
+      setSplashProgress(Math.floor(current));
+    }, intervalTime);
 
-  useEffect(() => {
-    if (!showLanding) return;
-    if (hudPhase === 2) {
-      let start = 40;
-      const target = 85;
-      const stepTime = 35;
-      const timer = setInterval(() => {
-        start += 3;
-        if (start >= target) {
-          start = target;
-          clearInterval(timer);
-        }
-        setHudComplianceScore(start);
-      }, stepTime);
-      return () => clearInterval(timer);
-    } else {
-      setTimeout(() => setHudComplianceScore(40), 0);
-    }
-  }, [hudPhase, showLanding]);
+    // Dynamic status text loading messages
+    const statusTexts = activeLanguage === "english" ? [
+      "Initializing Spatial Engine...",
+      "Loading Vastu Shastra Rulesets...",
+      "Calibrating Alignment Matrices...",
+      "System Ready!"
+    ] : [
+      "स्थानिक इन्जिन सुरु गर्दै...",
+      "वास्तु शास्त्र नियमहरू लोड गर्दै...",
+      "संरेखण म्याट्रिक्स क्यालिब्रेट गर्दै...",
+      "प्रणाली तयार!"
+    ];
+
+    let textIdx = 0;
+    setTimeout(() => setSplashStatus(statusTexts[0]), 0);
+    const textTimer = setInterval(() => {
+      if (textIdx < statusTexts.length - 1) {
+        textIdx += 1;
+        setSplashStatus(statusTexts[textIdx]);
+      }
+    }, 700);
+
+    return () => {
+      clearInterval(progressTimer);
+      clearInterval(textTimer);
+    };
+  }, [showLanding, activeLanguage]);
 
   // --- Helpers for formatting and items ---
   const getRoomNameFormatted = (room: string) => {
@@ -680,7 +701,7 @@ export default function Home() {
         <div className="glow-bg glow-2"></div>
         <div className="glow-bg glow-3"></div>
 
-        <div className="landing-page-wrapper">
+        <div className="splash-screen-wrapper">
           <header className="landing-header">
             <div className="container header-container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div className="logo-area" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -738,217 +759,73 @@ export default function Home() {
                     नेपाली
                   </button>
                 </div>
-                <a href="/vastuvision.apk" download className="btn btn-download btn-xs" style={{ textDecoration: "none" }}>
-                  <span>📥 {activeLanguage === "english" ? "Download App" : "डाउनलोड एप"}</span>
-                </a>
               </div>
             </div>
           </header>
 
-          <section className="landing-hero-section">
-            <div className="container hero-container">
-              <div className="hero-text-side">
-                <span className="hero-badge">
-                  ✨ {activeLanguage === "english" ? "Next-Gen Spatial Vastu Shastra Analytics" : "अर्को पुस्ताको वास्तु शास्त्र विश्लेषण"}
-                </span>
-                <h2>
-                  {activeLanguage === "english" ? "Unlock the Natural Harmony of Your Home" : "तपाईंको घरको प्राकृतिक सद्भाव पत्ता लगाउनुहोस्"}
-                </h2>
-                <p>
-                  {activeLanguage === "english" 
-                    ? "VastuVision AI combines traditional Vastu Shastra architectural principles with advanced computer vision to analyze room layouts, furniture alignments, and energy currents, providing instant remedies for ultimate peace and prosperity."
-                    : "वास्तुभिजन एआईले आधुनिक कम्प्युटर भिजन र परम्परागत वास्तु शास्त्र सिद्धान्तहरू मिलाएर कोठाको सजावट, फर्निचरको स्थिति र ऊर्जा प्रवाहको विश्लेषण गर्दछ र पूर्ण शान्ति र समृद्धिका लागि तत्कालै वास्तु उपायहरू प्रदान गर्दछ।"}
-                </p>
+          <main className="splash-main-content">
+            <div className="splash-visual-container">
+              <div className="vastu-hero-illustrator">
+                <div className="illustrator-ring ring-outer"></div>
+                <div className="illustrator-ring ring-middle"></div>
+                <div className="illustrator-ring ring-inner"></div>
                 
-                <div className="hero-cta-area">
-                  <button className="btn btn-primary btn-lg btn-glow" onClick={() => setShowLanding(false)}>
-                    <span>{activeLanguage === "english" ? "Begin Space Analysis" : "स्थान विश्लेषण सुरु गर्नुहोस्"}</span>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: "8px", verticalAlign: "middle" }}>
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                  </button>
-                  <a href="/vastuvision.apk" download className="btn btn-secondary btn-lg" style={{ textDecoration: "none" }}>
-                    <span>📥 {activeLanguage === "english" ? "Download Android App" : "एन्ड्रोइड एप डाउनलोड गर्नुहोस्"}</span>
-                  </a>
-                </div>
-              </div>
+                <div className="vastu-mandala-grid">
+                  <div className="grid-axis axis-h"></div>
+                  <div className="grid-axis axis-v"></div>
+                  <div className="grid-diagonal diag-1"></div>
+                  <div className="grid-diagonal diag-2"></div>
+                  <div className="grid-scanner"></div>
 
-              <div className="hero-animation-side" style={{ display: "flex", flexDirection: "column", gap: "24px", alignItems: "center" }}>
-                <div className="vastu-hero-illustrator">
-                  <div className="illustrator-ring ring-outer"></div>
-                  <div className="illustrator-ring ring-middle"></div>
-                  <div className="illustrator-ring ring-inner"></div>
-                  
-                  <div className="vastu-mandala-grid">
-                    <div className="grid-axis axis-h"></div>
-                    <div className="grid-axis axis-v"></div>
-                    <div className="grid-diagonal diag-1"></div>
-                    <div className="grid-diagonal diag-2"></div>
-                    <div className="grid-scanner"></div>
+                  <span className="cardinal-lbl lbl-n">{t("north")}</span>
+                  <span className="cardinal-lbl lbl-s">{t("south")}</span>
+                  <span className="cardinal-lbl lbl-e">{t("east")}</span>
+                  <span className="cardinal-lbl lbl-w">{t("west")}</span>
 
-                    <span className="cardinal-lbl lbl-n">{t("north")}</span>
-                    <span className="cardinal-lbl lbl-s">{t("south")}</span>
-                    <span className="cardinal-lbl lbl-e">{t("east")}</span>
-                    <span className="cardinal-lbl lbl-w">{t("west")}</span>
-
-                    <div className="aligning-furniture element-bed" title="Bed -> SW">🛏️</div>
-                    <div className="aligning-furniture element-stove" title="Stove -> SE">🍳</div>
-                    <div className="aligning-furniture element-altar" title="Altar -> NE">🙏</div>
-                    <div className="aligning-furniture element-water" title="Water -> NW">💧</div>
+                  <div className="aligning-furniture element-bed" title="Bed -> SW">
+                    <div className="furniture-icon-badge bed-badge">
+                      <span>🛏️</span>
+                      <span className="furniture-lbl">{activeLanguage === "english" ? "SW" : "नैऋत्य"}</span>
+                    </div>
                   </div>
-
-                  <div className="illustrator-center-core">
-                    <span className="core-symbol">🧭</span>
+                  <div className="aligning-furniture element-stove" title="Stove -> SE">
+                    <div className="furniture-icon-badge stove-badge">
+                      <span>🍳</span>
+                      <span className="furniture-lbl">{activeLanguage === "english" ? "SE" : "आग्नेय"}</span>
+                    </div>
+                  </div>
+                  <div className="aligning-furniture element-altar" title="Altar -> NE">
+                    <div className="furniture-icon-badge altar-badge">
+                      <span>🙏</span>
+                      <span className="furniture-lbl">{activeLanguage === "english" ? "NE" : "ईशान"}</span>
+                    </div>
+                  </div>
+                  <div className="aligning-furniture element-water" title="Water -> NW">
+                    <div className="furniture-icon-badge water-badge">
+                      <span>💧</span>
+                      <span className="furniture-lbl">{activeLanguage === "english" ? "NW" : "वायव्य"}</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* HUD Live System Demo Card */}
-                <div className="system-hud-card">
-                  <div className="hud-header">
-                    <span className="hud-live-tag">
-                      <span className="hud-pulse-dot"></span>
-                      {activeLanguage === "english" ? "Live Simulation" : "लाइभ सिम्युलेसन"}
-                    </span>
-                    <span className="hud-step-indicator">
-                      {activeLanguage === "english" ? `Step ${hudPhase + 1} of 4` : `चरण ${hudPhase + 1} / 4`}
-                    </span>
-                  </div>
-
-                  <div className="hud-phase-info">
-                    <h4 className="hud-phase-title">
-                      {hudPhase === 0 && (activeLanguage === "english" ? "1. Spatial Boundary Scan" : "१. कोठा र दिशा स्क्यानिङ")}
-                      {hudPhase === 1 && (activeLanguage === "english" ? "2. Furniture Orientation Mapping" : "२. फर्निचर र दिशा पहिचान")}
-                      {hudPhase === 2 && (activeLanguage === "english" ? "3. Harmony Score Calculation" : "३. वास्तु अनुकूलता स्कोर")}
-                      {hudPhase === 3 && (activeLanguage === "english" ? "4. Remedy Generation" : "४. वास्तु उपाय निर्धारण")}
-                    </h4>
-                    <p className="hud-phase-desc">
-                      {hudPhase === 0 && (activeLanguage === "english" 
-                        ? "AI processes room photographs and links camera coordinates with compass direction angles."
-                        : "एआईले कम्पासको दिशासँग फोटोहरू मिलाएर कोठाको चौतर्फी सिमाना विश्लेषण गर्छ।")}
-                      {hudPhase === 1 && (activeLanguage === "english"
-                        ? "Object detection identifies furniture and positions them in the cardinal blueprint layout."
-                        : "फर्निचर र भौतिक वस्तुहरू पत्ता लगाई ३डी कोठाको लेआउटमा स्थानान्तरण गरिन्छ।")}
-                      {hudPhase === 2 && (activeLanguage === "english"
-                        ? "Applying ancient Vastu element matrices (Agni, Ishaan) to calculate layout compliance."
-                        : "पञ्चतत्व र प्राचीन वास्तुशास्त्रका नियम अनुसार कोठाको अनुपालन स्कोर गणना गरिन्छ।")}
-                      {hudPhase === 3 && (activeLanguage === "english"
-                        ? "Remedy algorithms generate placement corrections to balance energy currents without rebuilding."
-                        : "विना कुनै भौतिक तोडफोड, कोठाको ऊर्जा सुधार्न उपयुक्त उपायहरू तयार पारिन्छ।")}
-                    </p>
-                  </div>
-
-                  <div className="hud-visual-display">
-                    {hudPhase === 0 && (
-                      <>
-                        <div className="hud-scan-frame"></div>
-                        <div className="hud-scan-line"></div>
-                        <div className="hud-compass-badge">
-                          <span style={{ fontSize: "2rem" }}>🧭</span>
-                          <span className="hud-compass-value">
-                            {activeLanguage === "english" ? "Scanning East (90°)" : "पूर्व दिशा स्क्यानिङ (९०°)"}
-                          </span>
-                        </div>
-                      </>
-                    )}
-
-                    {hudPhase === 1 && (
-                      <div className="hud-mapping-list">
-                        <div className="hud-mapping-item detected">
-                          <span>🛏️ {activeLanguage === "english" ? "Master Bed (South-West)" : "बेड (दक्षिण-पश्चिम)"}</span>
-                          <span className="hud-status-badge done">✓ {activeLanguage === "english" ? "Mapped" : "पत्ता लाग्यो"}</span>
-                        </div>
-                        <div className="hud-mapping-item">
-                          <span>🍳 {activeLanguage === "english" ? "Stove (North-West)" : "चुलो (उत्तर-पश्चिम)"}</span>
-                          <span className="hud-status-badge scanning">{activeLanguage === "english" ? "Analyzing..." : "जाँच हुँदै..."}</span>
-                        </div>
-                      </div>
-                    )}
-
-                    {hudPhase === 2 && (
-                      <div className="hud-score-display">
-                        <div className="hud-score-ring" style={{ "--hud-score-pct": hudComplianceScore } as any}>
-                          <span className="hud-score-val">{hudComplianceScore}%</span>
-                        </div>
-                        <div className="hud-score-meta">
-                          <span className="hud-score-label">{activeLanguage === "english" ? "Compliance Score" : "सद्भाव स्कोर"}</span>
-                          <span className="hud-score-grade">
-                            {hudComplianceScore < 60 ? (activeLanguage === "english" ? "Evaluating..." : "मूल्याङ्कन हुँदै...") : (activeLanguage === "english" ? "✓ Balanced Energy" : "✓ सन्तुलित ऊर्जा")}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {hudPhase === 3 && (
-                      <div className="hud-remedies-list">
-                        <div className="hud-remedy-item">
-                          <span className="hud-remedy-icon">💡</span>
-                          <span className="hud-remedy-txt">
-                            {activeLanguage === "english" 
-                              ? "Move stove to South-East (Agneya) corner to balance the Fire element."
-                              : "अग्नि तत्व सन्तुलन गर्न चुलो दक्षिण-पूर्व कुनामा सार्नुहोस्।"}
-                          </span>
-                        </div>
-                        <div className="hud-remedy-item">
-                          <span className="hud-remedy-icon">🌿</span>
-                          <span className="hud-remedy-txt">
-                            {activeLanguage === "english"
-                              ? "Place a green plant in North-East to boost health energy flow."
-                              : "सकारात्मक ऊर्जाका लागि उत्तर-पूर्व कुनामा हरियो बिरुवा राख्नुहोस्।"}
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                <div className="illustrator-center-core">
+                  <span className="core-symbol">🧭</span>
                 </div>
               </div>
             </div>
-          </section>
 
-          <section className="workflow-info-section">
-            <div className="container">
-              <h3 className="workflow-title text-center">
-                {activeLanguage === "english" ? "How VastuVision AI Works" : "वास्तुभिजन एआईले कसरी काम गर्छ"}
-              </h3>
-              <div className="workflow-steps-grid">
-                <div className="workflow-step-card">
-                  <div className="step-num-icon">1</div>
-                  <h4>{activeLanguage === "english" ? "Select & Upload" : "कोठा रोज्नुहोस् र फोटो हाल्नुहोस्"}</h4>
-                  <p>
-                    {activeLanguage === "english"
-                      ? "Choose a room (Bedroom, Kitchen, Pooja Room) and upload wall photos facing each cardinal direction."
-                      : "कोठाको प्रकार रोजेर चारै दिशा तर्फ फर्किएर खिचेका फोटोहरू अपलोड वा स्क्यान गर्नुहोस्।"}
-                  </p>
-                </div>
-                <div className="workflow-step-card">
-                  <div className="step-num-icon">2</div>
-                  <h4>{activeLanguage === "english" ? "AI Spatial Analysis" : "एआई लेआउट स्क्यान"}</h4>
-                  <p>
-                    {activeLanguage === "english"
-                      ? "Advanced Vision models map room coordinates and check placement configurations against Vastu rules."
-                      : "हाम्रो एआई मोडेलले कोठाका फर्निचरहरूको सही दिशा पत्ता लगाई पञ्चतत्व र ऊर्जा सन्तुलन जाँच गर्छ।"}
-                  </p>
-                </div>
-                <div className="workflow-step-card">
-                  <div className="step-num-icon">3</div>
-                  <h4>{activeLanguage === "english" ? "Get Remedies & Refine" : "उपाय प्राप्त गर्नुहोस् र सच्याउनुहोस्"}</h4>
-                  <p>
-                    {activeLanguage === "english"
-                      ? "Review compliance scores, download blueprints, and write manual corrections to refine alignments instantly."
-                      : "वास्तु अनुपालन स्कोर र नक्सा हेर्नुहोस् र म्यानुअल सुधारहरू च्याट मार्फत तुरुन्तै अपडेट गर्नुहोस्।"}
-                  </p>
-                </div>
+            <div className="splash-loading-area">
+              <div className="splash-status-text">
+                {splashStatus}
+              </div>
+              <div className="splash-progress-container">
+                <div className="splash-progress-bar" style={{ width: `${splashProgress}%` }}></div>
+              </div>
+              <div className="splash-progress-percentage">
+                {splashProgress}%
               </div>
             </div>
-          </section>
-
-          <footer className="landing-footer text-center">
-            <p>
-              &copy; 2026 VastuVision AI. Developed by{" "}
-              <a href="https://anuditk.vercel.app" target="_blank" rel="noopener noreferrer" style={{ color: "var(--gold-bright)", textDecoration: "underline" }}>
-                LazZy
-              </a>
-            </p>
-          </footer>
+          </main>
         </div>
       </>
     );

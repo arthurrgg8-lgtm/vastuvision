@@ -2114,33 +2114,84 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
 
 .aligning-furniture {
     position: absolute;
-    font-size: 1.25rem;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
     animation: floatFurniture 4s ease-in-out infinite;
+    z-index: 5;
 }
 
 @keyframes floatFurniture {
     0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-6px) scale(1.05); }
+    50% { transform: translateY(-6px) scale(1.03); }
+}
+
+.furniture-icon-badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(13, 20, 31, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.15rem;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+    transition: all 0.35s var(--ease-out-expo);
+    position: relative;
+}
+
+.furniture-icon-badge::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1.5px solid transparent;
+    opacity: 0.55;
+    animation: pulseRingBorder 3s infinite ease-in-out;
+}
+
+@keyframes pulseRingBorder {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+.bed-badge::before { border-color: var(--gold); }
+.stove-badge::before { border-color: #f43f5e; }
+.altar-badge::before { border-color: #fbbf24; }
+.water-badge::before { border-color: var(--primary); }
+
+.furniture-lbl {
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background: rgba(7, 12, 18, 0.8);
+    padding: 1px 4px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .element-bed {
-    bottom: 20%; left: 20%;
+    bottom: 18%; left: 18%;
     animation-delay: 0s;
 }
 
 .element-stove {
-    bottom: 20%; right: 20%;
+    bottom: 18%; right: 18%;
     animation-delay: 1s;
 }
 
 .element-altar {
-    top: 20%; right: 20%;
+    top: 18%; right: 18%;
     animation-delay: 2s;
 }
 
 .element-water {
-    top: 20%; left: 20%;
+    top: 18%; left: 18%;
     animation-delay: 3s;
 }
 
@@ -2526,5 +2577,84 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
     color: var(--text-secondary);
     line-height: 1.35;
 }
+
+/* ── Fullscreen Splash Loader Screen ────────────────────────────── */
+.splash-screen-wrapper {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg-dark);
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.splash-main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    padding: 24px;
+}
+
+.splash-visual-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 380px;
+}
+
+.splash-loading-area {
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.splash-status-text {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    min-height: 20px;
+    text-align: center;
+    letter-spacing: 0.02em;
+    animation: splashStatusPulse 1.2s infinite ease-in-out;
+}
+
+@keyframes splashStatusPulse {
+    0%, 100% { opacity: 0.75; }
+    50% { opacity: 1; }
+}
+
+.splash-progress-container {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.splash-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--gold-bright));
+    box-shadow: 0 0 10px var(--primary-glow);
+    border-radius: 20px;
+    transition: width 0.1s linear;
+}
+
+.splash-progress-percentage {
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
 
 
