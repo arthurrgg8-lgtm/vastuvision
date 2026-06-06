@@ -1141,41 +1141,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* FAQ Section — Compact accordion, always visible on main page */}
-          <section className="faq-section-compact text-center">
-            <div className="faq-compact-title-area">
-              <h2>{t("faqTitle")}</h2>
-              <p>{t("faqSub")}</p>
-            </div>
-            <div className="faq-accordion">
-              {((TRANSLATIONS[activeLanguage] as any).faqList || TRANSLATIONS.english.faqList).map((faq: any, idx: number) => {
-                const isOpen = faqOpenIdxs.includes(idx);
-                return (
-                  <div
-                    key={idx}
-                    className={`faq-accordion-item ${isOpen ? "open" : ""}`}
-                  >
-                    <button
-                      className="faq-accordion-question"
-                      onClick={() => toggleFaq(idx)}
-                      aria-expanded={isOpen}
-                    >
-                      <span className="faq-q-text">{faq.q}</span>
-                      <span className={`faq-accordion-arrow ${isOpen ? "open" : ""}`}>
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <polyline points="6 9 12 15 18 9" />
-                        </svg>
-                      </span>
-                    </button>
-                    <div className="faq-accordion-answer">
-                      <p>{faq.a}</p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-
           {/* STEP 1: ROOM SELECTION */}
           {currentStep === 1 && (
             <section className="step-section active">
@@ -1676,7 +1641,40 @@ export default function Home() {
         </div>
       </main>
 
-
+      {/* FAQ Section — Knowledge base at bottom */}
+      <section className="faq-section-compact text-center">
+        <div className="faq-compact-title-area">
+          <h2>{t("faqTitle")}</h2>
+          <p>{t("faqSub")}</p>
+        </div>
+        <div className="faq-accordion">
+          {((TRANSLATIONS[activeLanguage] as any).faqList || TRANSLATIONS.english.faqList).map((faq: any, idx: number) => {
+            const isOpen = faqOpenIdxs.includes(idx);
+            return (
+              <div
+                key={idx}
+                className={`faq-accordion-item ${isOpen ? "open" : ""}`}
+              >
+                <button
+                  className="faq-accordion-question"
+                  onClick={() => toggleFaq(idx)}
+                  aria-expanded={isOpen}
+                >
+                  <span className="faq-q-text">{faq.q}</span>
+                  <span className={`faq-accordion-arrow ${isOpen ? "open" : ""}`}>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                  </span>
+                </button>
+                <div className="faq-accordion-answer">
+                  <p>{faq.a}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="app-footer text-center">
