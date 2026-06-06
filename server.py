@@ -41,7 +41,133 @@ SECURITY_HEADERS = {
 }
 
 
-def generate_mock_analysis(room_type, previous_analysis=None, correction=None):
+NEPALI_TRANSLATIONS = {
+    "Bed": {
+        "name": "ओछ्यान",
+        "vastu_ideal": "दक्षिण वा पूर्व",
+        "reason": "उत्तर तर्फ टाउको राखेर सुत्दा शरीर पृथ्वीको चुम्बकीय क्षेत्रसँग विपरित रूपमा पङ्क्तिबद्ध हुन्छ, जसले गर्दा स्वास्थ्य र निद्रामा गडबड हुन्छ।",
+        "suggestion": "टाउको दक्षिण वा पूर्व तर्फ फर्काएर सुत्ने गरी ओछ्यान घुमाउनुहोस्।"
+    },
+    "Mirror": {
+        "name": "ऐना",
+        "vastu_ideal": "उत्तर वा पूर्व",
+        "reason": "दक्षिणको भित्तामा ऐना राख्दा चिन्ता बढ्छ र सकारात्मक ऊर्जाको प्रतिबिम्ब कमजोर हुन्छ।",
+        "suggestion": "ऐनालाई उत्तर वा पूर्वको भित्तामा सार्नुहोस् वा प्रयोग नगर्दा छोप्नुहोस्।"
+    },
+    "Heavy Wardrobe": {
+        "name": "दराज",
+        "vastu_ideal": "दक्षिण वा पश्चिम",
+        "reason": "दक्षिण भित्तामा गह्रौं दराज राख्दा स्थिरता र मानसिकशान्ति प्राप्त हुन्छ।",
+        "suggestion": "कुनै परिवर्तन आवश्यक छैन।"
+    },
+    "Study Desk": {
+        "name": "पढ्ने टेबल",
+        "vastu_ideal": "पूर्व वा उत्तर",
+        "reason": "पश्चिम भित्तामा पढ्ने टेबल हुँदा ध्यान केन्द्रित गर्न गाह्रो हुन्छ; पूर्व तर्फ फर्केर पढ्नु उत्तम मानिन्छ।",
+        "suggestion": "टेबललाई उत्तर वा पूर्व भित्तामा सार्नुहोस् र पढ्दा पूर्व वा उत्तर तर्फ फर्किनुहोस्।"
+    },
+    "Cooking Stove": {
+        "name": "चुलो",
+        "vastu_ideal": "दक्षिण-पूर्व",
+        "reason": "उत्तर-पूर्वमा चुलो हुनु वास्तु विरुद्ध हो, यसले स्वास्थ्य र धनमा नकारात्मक असर पार्न सक्छ।",
+        "suggestion": "चुलोलाई भान्साको दक्षिण-पूर्व (आग्नेय) कोणमा सार्नुहोस्।"
+    },
+    "Water Sink": {
+        "name": "पानीको सिंक",
+        "vastu_ideal": "उत्तर-पूर्व वा उत्तर",
+        "reason": "उत्तर-पूर्वमा सिंक राख्नु उपयुक्त छ, यसले जल तत्वलाई सन्तुलनमा राख्छ।",
+        "suggestion": "कुनै परिवर्तन आवश्यक छैन।"
+    },
+    "Sofa": {
+        "name": "सोफा",
+        "vastu_ideal": "पश्चिम वा दक्षिण",
+        "reason": "बैठक कोठाको पश्चिम भित्तामा सोफा राख्दा सामाजिक सम्बन्ध र स्थायित्वमा मद्दत पुग्छ।",
+        "suggestion": "कुनै परिवर्तन आवश्यक छैन।"
+    },
+    "TV": {
+        "name": "टिभी",
+        "vastu_ideal": "दक्षिण-पूर्व",
+        "reason": "उत्तर-पूर्वमा टिभी राख्दा ध्यान भंग हुन सक्छ र नकारात्मक तरंग उत्पन्न हुन सक्छ।",
+        "suggestion": "टिभीलाई दक्षिण-पूर्व वा उत्तर-पश्चिममा सार्नुहोस्।"
+    },
+    "Clock": {
+        "name": "घडी",
+        "vastu_ideal": "उत्तर वा पूर्व",
+        "reason": "दक्षिण भित्तामा घडी राख्नु भनेको नकारात्मक समय प्रवाह वा बाधाहरूको प्रतिनिधित्व गर्नु हो।",
+        "suggestion": "घडीलाई उत्तर वा पूर्व भित्तामा सार्नुहोस्।"
+    },
+    "Toilet Seat": {
+        "name": "शौचालय सिट",
+        "vastu_ideal": "दक्षिण वा पश्चिम",
+        "reason": "पश्चिम भित्तामा शौचालय सिट हुनु ढल निकासको नियम अनुसार सही छ।",
+        "suggestion": "कुनै परिवर्तन आवश्यक छैन।"
+    },
+    "Refrigerator": {
+        "name": "फ्रिज",
+        "vastu_ideal": "दक्षिण-पूर्व वा पश्चिम",
+        "reason": "दक्षिण-पश्चिममा फ्रिज राख्दा वित्तीय स्थिरतामा अवरोध पुग्न सक्छ।",
+        "suggestion": "फ्रिजलाई दक्षिण-पूर्व वा पश्चिमको भित्तामा सार्नुहोस्।"
+    },
+    "Pooja Altar": {
+        "name": "पूजा स्थल",
+        "vastu_ideal": "उत्तर-पूर्व",
+        "reason": "उत्तर-पूर्वमा पूजा स्थल राख्दा आध्यात्मिक ऊर्जा अधिकतम हुन्छ।",
+        "suggestion": "कुनै परिवर्तन आवश्यक छैन।"
+    },
+    "Indoor Plants": {
+        "name": "भित्री बिरुवाहरू",
+        "vastu_ideal": "उत्तर वा पूर्व",
+        "reason": "उत्तर-पूर्वमा बिरुवाहरू राख्दा ताजा अक्सिजन र सकारात्मक ऊर्जा प्राप्त हुन्छ।",
+        "suggestion": "कुनै परिवर्तन आवश्यक छैन।"
+    }
+}
+
+def translate_direction_to_nepali(direction):
+    d_lower = str(direction).lower().strip()
+    if d_lower == "north": return "उत्तर"
+    if d_lower == "south": return "दक्षिण"
+    if d_lower == "east": return "पूर्व"
+    if d_lower == "west": return "पश्चिम"
+    if d_lower == "center": return "केन्द्र"
+    if d_lower in ["north-east", "northeast"]: return "उत्तर-पूर्व"
+    if d_lower in ["south-east", "southeast"]: return "दक्षिण-पूर्व"
+    if d_lower in ["south-west", "southwest"]: return "दक्षिण-पश्चिम"
+    if d_lower in ["north-west", "northwest"]: return "उत्तर-पश्चिम"
+    return direction
+
+def translate_mock_results_to_nepali(result):
+    if not result:
+        return result
+    res_copy = json.loads(json.dumps(result))
+    translated_objects = []
+    for obj in res_copy.get("objects", []):
+        name = obj.get("name", "")
+        match = None
+        for key, val in NEPALI_TRANSLATIONS.items():
+            if key.lower() == name.lower() or key.lower() in name.lower() or name.lower() in key.lower():
+                match = val
+                break
+        
+        if match:
+            translated_obj = {
+                "name": match["name"],
+                "detected_direction": translate_direction_to_nepali(obj.get("detected_direction", "")),
+                "vastu_ideal": match["vastu_ideal"],
+                "status": obj.get("status", "good"),
+                "reason": match["reason"],
+                "suggestion": match["suggestion"]
+            }
+            translated_objects.append(translated_obj)
+        else:
+            translated_obj = obj.copy()
+            translated_obj["detected_direction"] = translate_direction_to_nepali(obj.get("detected_direction", ""))
+            translated_objects.append(translated_obj)
+            
+    res_copy["objects"] = translated_objects
+    return res_copy
+
+
+def _generate_mock_analysis_internal(room_type, previous_analysis=None, correction=None):
     if previous_analysis and correction:
         try:
             # Deep clone previous analysis
@@ -332,7 +458,11 @@ def generate_mock_analysis(room_type, previous_analysis=None, correction=None):
                     }
                 ]
             }
-
+def generate_mock_analysis(room_type, previous_analysis=None, correction=None, language="english"):
+    result = _generate_mock_analysis_internal(room_type, previous_analysis, correction)
+    if language == "nepali":
+        result = translate_mock_results_to_nepali(result)
+    return result
 
 
 class VastuVisionHandler(http.server.SimpleHTTPRequestHandler):
@@ -399,6 +529,7 @@ class VastuVisionHandler(http.server.SimpleHTTPRequestHandler):
                 
                 previous_analysis = request_payload.get('previous_analysis')
                 correction = request_payload.get('correction')
+                language = request_payload.get('language', 'english')
                 
                 is_mock_mode = not API_KEY or API_KEY == "your-groq-api-key"
 
@@ -410,10 +541,10 @@ class VastuVisionHandler(http.server.SimpleHTTPRequestHandler):
                     # Refinement query
                     if is_mock_mode:
                         logger.info("Refinement request for room_type=%s (Demo Mode)", room_type)
-                        response_json = generate_mock_analysis(room_type, previous_analysis, correction)
+                        response_json = generate_mock_analysis(room_type, previous_analysis, correction, language)
                     else:
                         logger.info("Refinement request for room_type=%s", room_type)
-                        response_json = self.call_groq_refinement(room_type, previous_analysis, correction)
+                        response_json = self.call_groq_refinement(room_type, previous_analysis, correction, language)
                 else:
                     images = request_payload.get('images', {})
                     if not images:
@@ -422,10 +553,10 @@ class VastuVisionHandler(http.server.SimpleHTTPRequestHandler):
                     # Full vision query
                     if is_mock_mode:
                         logger.info("Vision analysis request for room_type=%s (Demo Mode)", room_type)
-                        response_json = generate_mock_analysis(room_type)
+                        response_json = generate_mock_analysis(room_type, language=language)
                     else:
                         logger.info("Vision analysis request for room_type=%s (%d images)", room_type, len(images))
-                        response_json = self.call_groq_vision(room_type, images)
+                        response_json = self.call_groq_vision(room_type, images, language)
                 
                 # Send response
                 self.send_response(200)
@@ -458,7 +589,7 @@ class VastuVisionHandler(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps({"error": message}).encode('utf-8'))
 
-    def call_groq_vision(self, room_type, images):
+    def call_groq_vision(self, room_type, images, language="english"):
         system_prompt = f"""You are a Vastu Shastra expert AI specializing in architectural layout and interior design.
 Analyze the provided 4 directional photos of a '{room_type}' (facing North, South, East, and West walls).
 
@@ -485,7 +616,11 @@ Vastu Rules Reference for '{room_type}':
 - Fish Tank: Ideal: North-East. Wrong: South-East. Status: warning.
 
 You must return ONLY a single valid raw JSON object matching the schema below. No markdown wrapping (like ```json ... ```). No explanations.
-
+"""
+        if language == "nepali":
+            system_prompt += "\nIMPORTANT: The user has selected Nepali language. Please output all JSON text values (name, detected_direction, vastu_ideal, status, reason, suggestion) translated into Nepali language, while keeping all JSON keys (room_type, vastu_score, objects, name, detected_direction, vastu_ideal, status, reason, suggestion) in English.\n"
+        
+        system_prompt += f"""
 Expected JSON Schema:
 {{
   "room_type": "{room_type}",
@@ -552,18 +687,22 @@ Expected JSON Schema:
 
         return self._send_groq_request(payload, "Vision")
 
-    def call_groq_refinement(self, room_type, previous_analysis, correction):
-        system_prompt = f"""You are a Vastu Shastra expert AI specializing in interior room layout analysis.
-The user previously ran an AI Vastu analysis on their '{room_type}'.
-Here is the previous JSON analysis results:
-{json.dumps(previous_analysis)}
-
-Please adjust the Vastu analysis JSON based on the user's manual input:
-1. If the user states an item is NOT there, remove it from the list of objects.
-2. If the user adds or corrects the location of an item, update or add that item. Re-evaluate its Vastu compliance based on Vastu principles, and set the correct status (good/warning/critical), reason, and suggestions.
-3. Recalculate the `vastu_score` (100 base, deduct 20 points for each critical violation, 10 for warnings).
-4. Return ONLY a single raw valid JSON matching the schema below. No markdown wrapping. No explanations.
-
+    def call_groq_refinement(self, room_type, previous_analysis, correction, language="english"):
+        system_prompt = (
+            f"You are a Vastu Shastra expert AI specializing in interior room layout analysis.\n"
+            + f"The user previously ran an AI Vastu analysis on their '{room_type}'.\n"
+            + f"Here is the previous JSON analysis results:\n"
+            + json.dumps(previous_analysis)
+            + "\n\nPlease adjust the Vastu analysis JSON based on the user's manual input:\n"
+            + "1. If the user states an item is NOT there, remove it from the list of objects.\n"
+            + "2. If the user adds or corrects the location of an item, update or add that item. Re-evaluate its Vastu compliance based on Vastu principles, and set the correct status (good/warning/critical), reason, and suggestions.\n"
+            + "3. Recalculate the `vastu_score` (100 base, deduct 20 points for each critical violation, 10 for warnings).\n"
+            + "4. Return ONLY a single raw valid JSON matching the schema below. No markdown wrapping. No explanations.\n"
+        )
+        if language == "nepali":
+            system_prompt += "\nIMPORTANT: The user has selected Nepali language. Please output all JSON text values (name, detected_direction, vastu_ideal, status, reason, suggestion) translated into Nepali language, while keeping all JSON keys (room_type, vastu_score, objects, name, detected_direction, vastu_ideal, status, reason, suggestion) in English.\n"
+        
+        system_prompt += f"""
 Expected JSON Schema:
 {{
   "room_type": "{room_type}",

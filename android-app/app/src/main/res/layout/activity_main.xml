@@ -48,6 +48,43 @@
             android:layout_marginTop="6dp"
             android:gravity="center"
             android:fontFamily="sans-serif"/>
+
+        <!-- Language toggle switcher -->
+        <LinearLayout
+            android:id="@+id/layoutLanguageToggle"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_language_toggle"
+            android:orientation="horizontal"
+            android:padding="2dp">
+
+            <TextView
+                android:id="@+id/tvLangEn"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="EN"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@drawable/bg_language_selected"/>
+
+            <TextView
+                android:id="@+id/tvLangNe"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="नेपाली"
+                android:textColor="@color/text_muted"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="@android:color/transparent"/>
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Selection Area wrapped in a Premium Card -->

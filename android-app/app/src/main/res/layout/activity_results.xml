@@ -62,6 +62,7 @@
                 android:layout_centerInParent="true" />
 
             <TextView
+                android:id="@+id/tvHarmonyLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="HARMONY"
@@ -127,6 +128,7 @@
                 android:background="@drawable/bg_input_dark"
                 android:layout_margin="3dp"/>
             <TextView
+                android:id="@+id/tvGridCenter"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_rowWeight="1"

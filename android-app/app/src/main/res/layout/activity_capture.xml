@@ -126,6 +126,20 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="30dp" />
 
+    <!-- Choose from Gallery button -->
+    <Button
+        android:id="@+id/btnGallery"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:text="Gallery"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/primary"
+        app:cornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/btnCapture"
+        app:layout_constraintTop_toTopOf="@id/btnCapture"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="30dp" />
+
     <!-- Loading State Dialog overlay -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutLoading"
@@ -163,6 +177,7 @@
             android:layout_marginTop="24dp"/>
 
         <TextView
+            android:id="@+id/tvLoadingSub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sending request to VastuVision AI..."

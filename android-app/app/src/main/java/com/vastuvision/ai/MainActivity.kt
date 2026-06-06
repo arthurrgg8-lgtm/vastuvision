@@ -1,6 +1,7 @@
 package com.vastuvision.ai
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -17,18 +18,27 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val database by lazy { VastuDatabase.getDatabase(this) }
+    private val roomTypes = listOf("bedroom", "kitchen", "living_room", "pooja_room", "bathroom")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 1. Setup Room Selector Spinner
-        val roomTypes = listOf("bedroom", "kitchen", "living_room", "pooja_room", "bathroom")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roomTypes.map {
-            it.replace("_", " ").replaceFirstChar { char -> char.uppercase() }
-        })
-        binding.spinnerRoomType.adapter = adapter
+        // 1. Language toggles
+        binding.tvLangEn.setOnClickListener {
+            NetworkClient.currentLanguage = "english"
+            updateUILanguage()
+            loadHistory()
+        }
+        binding.tvLangNe.setOnClickListener {
+            NetworkClient.currentLanguage = "nepali"
+            updateUILanguage()
+            loadHistory()
+        }
+
+        // Setup initial language
+        updateUILanguage()
 
         // 2. Setup History RecyclerView
         binding.rvHistory.layoutManager = LinearLayoutManager(this)
@@ -46,6 +56,54 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getRoomDisplayName(room: String, lang: String): String {
+        return if (lang == "nepali") {
+            when (room) {
+                "bedroom" -> "सुत्ने कोठा (Bedroom)"
+                "kitchen" -> "भान्सा कोठा (Kitchen)"
+                "living_room" -> "बैठक कोठा (Living Room)"
+                "pooja_room" -> "पूजा कोठा (Pooja Room)"
+                "bathroom" -> "शौचालय (Bathroom)"
+                else -> room
+            }
+        } else {
+            room.replace("_", " ").replaceFirstChar { char -> char.uppercase() }
+        }
+    }
+
+    private fun updateUILanguage() {
+        val lang = NetworkClient.currentLanguage
+        if (lang == "nepali") {
+            binding.tvAppTitle.text = "वास्तुभिजन AI"
+            binding.tvAppSubtitle.text = "स्मार्ट कोठा विश्लेषण र सद्भाव गाइड"
+            binding.tvSelectTitle.text = "१. कोठाको प्रकार चयन गर्नुहोस्"
+            binding.btnStartScan.text = "स्क्यान सुरु गर्नुहोस्"
+            binding.tvHistoryTitle.text = "वास्तु स्क्यान इतिहास"
+            
+            binding.tvLangNe.setBackgroundResource(R.drawable.bg_language_selected)
+            binding.tvLangNe.setTextColor(Color.WHITE)
+            binding.tvLangEn.setBackgroundColor(Color.TRANSPARENT)
+            binding.tvLangEn.setTextColor(Color.parseColor("#7B829A"))
+        } else {
+            binding.tvAppTitle.text = "VastuVision AI"
+            binding.tvAppSubtitle.text = "Smart Vastu Shastra Room Analysis"
+            binding.tvSelectTitle.text = "1. Choose Room Type"
+            binding.btnStartScan.text = "Start Guided Scan"
+            binding.tvHistoryTitle.text = "Vastu Scan History"
+            
+            binding.tvLangEn.setBackgroundResource(R.drawable.bg_language_selected)
+            binding.tvLangEn.setTextColor(Color.WHITE)
+            binding.tvLangNe.setBackgroundColor(Color.TRANSPARENT)
+            binding.tvLangNe.setTextColor(Color.parseColor("#7B829A"))
+        }
+
+        // Re-populate Spinner
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roomTypes.map {
+            getRoomDisplayName(it, lang)
+        })
+        binding.spinnerRoomType.adapter = adapter
+    }
+
     override fun onResume() {
         super.onResume()
         loadHistory()
@@ -58,18 +116,6 @@ class MainActivity : AppCompatActivity() {
                     database.vastuAnalysisDao().getAllScans()
                 }
                 
-                // Set simple history list items
-                val historyAdapter = ArrayAdapter(
-                    this@MainActivity,
-                    android.R.layout.simple_list_item_2,
-                    android.R.id.text1,
-                    scans.map {
-                        val date = java.text.DateFormat.getDateTimeInstance().format(java.util.Date(it.timestamp))
-                        "${it.roomType.uppercase()} — Score: ${it.score}\nAnalyzed on: $date"
-                    }
-                )
-                
-                // Fallback direct list adapter
                 binding.rvHistory.adapter = object : RecyclerViewAdapter(scans) {
                     override fun onItemClick(json: String) {
                         val intent = Intent(this@MainActivity, ResultsActivity::class.java).apply {
@@ -86,12 +132,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Direct inline RecyclerView Adapter to avoid extra adapter class files
-    abstract class RecyclerViewAdapter(private val list: List<com.vastuvision.ai.database.VastuAnalysisEntity>) : 
+    inner abstract class RecyclerViewAdapter(private val list: List<com.vastuvision.ai.database.VastuAnalysisEntity>) : 
         androidx.recyclerview.widget.RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
         
         abstract fun onItemClick(json: String)
 
-        class ViewHolder(val view: android.view.View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+        inner class ViewHolder(val view: android.view.View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
             val text1: android.widget.TextView = view.findViewById(android.R.id.text1)
             val text2: android.widget.TextView = view.findViewById(android.R.id.text2)
         }
@@ -105,11 +151,16 @@ class MainActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = list[position]
             val date = java.text.DateFormat.getDateTimeInstance().format(java.util.Date(item.timestamp))
+            val lang = NetworkClient.currentLanguage
             
-            holder.text1.text = "${item.roomType.replace("_", " ").uppercase()} — Harmony Score: ${item.score}%"
+            val roomName = getRoomDisplayName(item.roomType, lang).uppercase()
+            val scoreText = if (lang == "nepali") "सद्भाव स्कोर: ${item.score}%" else "Harmony Score: ${item.score}%"
+            val savedText = if (lang == "nepali") "बचत गरिएको मिति: $date" else "Saved: $date"
+
+            holder.text1.text = "$roomName — $scoreText"
             holder.text1.setTextColor(android.graphics.Color.WHITE)
             
-            holder.text2.text = "Saved: $date"
+            holder.text2.text = savedText
             holder.text2.setTextColor(android.graphics.Color.GRAY)
             
             holder.view.setOnClickListener {

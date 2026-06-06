@@ -29,7 +29,7 @@ interface SectorInfo {
   avoid: string;
 }
 
-const SECTOR_DATA: Record<string, SectorInfo> = {
+const SECTOR_DATA_EN: Record<string, SectorInfo> = {
   north: {
     title: "North Sector (Kuber Zone)",
     intro: "Associated with Wealth, Career growth, and new Opportunities. Element: Water.",
@@ -56,7 +56,34 @@ const SECTOR_DATA: Record<string, SectorInfo> = {
   }
 };
 
-const ROOM_ELEMENTS: Record<RoomType, { icon: string; name: string; desc: string }> = {
+const SECTOR_DATA_NE: Record<string, SectorInfo> = {
+  north: {
+    title: "उत्तर क्षेत्र (कुबेर क्षेत्र)",
+    intro: "धन, करियरको वृद्धि र नयाँ अवसरहरूसँग सम्बन्धित। तत्व: जल।",
+    ideal: "मुख्य प्रवेशद्वार, ऐना, पानीको फोहोरा/सिंक, घडी, पढ्ने टेबल, बैठक कोठाको बस्ने व्यवस्था।",
+    avoid: "शौचालय (ढल निकास), भान्साको चुलो (अग्नि तत्व र जल तत्वको टकराव), गह्रौं दराज/भण्डारण।"
+  },
+  south: {
+    title: "दक्षिण क्षेत्र (यम क्षेत्र)",
+    intro: "यश, आराम, स्थिरता र शान्त निद्रासँग सम्बन्धित। तत्व: अग्नि र पृथ्वी।",
+    ideal: "मुख्य ओछ्यान (सुत्दा टाउको दक्षिण तर्फ फर्केको), गह्रौं दराज/दराज, भण्डारण कोठा, सोफा व्यवस्था।",
+    avoid: "मुख्य ढोका, ऐना (चिन्ता बढाउँछ), पानी ट्याङ्की/फोहोरा, पूजा कोठा।"
+  },
+  east: {
+    title: "पूर्व क्षेत्र (इन्द्र क्षेत्र)",
+    intro: "स्वास्थ्य, जीवन्तता, सामाजिक सम्बन्ध र सकारात्मक ऊर्जासँग सम्बन्धित। तत्व: वायु र सूर्य।",
+    ideal: "मुख्य प्रवेशद्वारहरू, ठूला भेन्टिलेसन झ्यालहरू, बाल्कोनीहरू, पढ्ने टेबल (पूर्व तर्फ फर्केको), ऐना।",
+    avoid: "शौचालय, गह्रौं संरचना, फोहोरमैला, बिहानीको घाम रोक्ने वस्तुहरू।"
+  },
+  west: {
+    title: "पश्चिम क्षेत्र (वरुण क्षेत्र)",
+    intro: "स्थिरता, नाफा, व्यापारिक लाभ र बालबालिकाको वृद्धिसँग सम्बन्धित। तत्व: आकाश।",
+    ideal: "बालबालिकाको ओछ्यान, भोजन क्षेत्र, शौचालय, गह्रौं ओभरहेड पानी ट्याङ्की।",
+    avoid: "मुख्य प्रवेशद्वार, पूजा कोठा, पश्चिम भित्ता तर्फ सिधै फर्किएको ऐना।"
+  }
+};
+
+const ROOM_ELEMENTS_EN: Record<RoomType, { icon: string; name: string; desc: string }> = {
   bedroom: { icon: "🌍", name: "Earth (Prithvi)", desc: "Fosters grounding, stability, and peaceful sleep." },
   kitchen: { icon: "🔥", name: "Fire (Agni)", desc: "Enhances health, cooking energy, and vitality." },
   living_room: { icon: "☁️", name: "Space/Air (Akash/Vayu)", desc: "Supports social interactions and dynamic harmony." },
@@ -64,8 +91,203 @@ const ROOM_ELEMENTS: Record<RoomType, { icon: string; name: string; desc: string
   bathroom: { icon: "💧", name: "Water/Drainage (Jal)", desc: "Manages negative energy flushing and purification." }
 };
 
+const ROOM_ELEMENTS_NE: Record<RoomType, { icon: string; name: string; desc: string }> = {
+  bedroom: { icon: "🌍", name: "पृथ्वी तत्व", desc: "स्थिरता, शान्ति र राम्रो निद्रालाई बढावा दिन्छ।" },
+  kitchen: { icon: "🔥", name: "अग्नि तत्व", desc: "स्वास्थ्य, खाना पकाउने ऊर्जा र जीवन्तता बढाउँछ।" },
+  living_room: { icon: "☁️", name: "वायु/आकाश तत्व", desc: "सामाजिक अन्तरक्रिया र गतिशील सद्भावलाई समर्थन गर्दछ।" },
+  pooja_room: { icon: "🙏", name: "शुद्ध आध्यात्मिक (आकाश)", desc: "अधिकतम आध्यात्मिक ऊर्जा र शान्ति कायम राख्छ।" },
+  bathroom: { icon: "💧", name: "जल/ढल निकास", desc: "नकारात्मक ऊर्जा सफा र शुद्धीकरण गर्न मद्दत गर्दछ।" }
+};
+
+const TRANSLATIONS = {
+  english: {
+    appTitle: "VastuVision AI",
+    tagline: "Smart Room Analysis & Harmony Guide",
+    downloadApp: "Download Android App",
+    stepSelectRoom: "Select Room",
+    stepUploadPhotos: "Upload Photos",
+    stepHarmonyReport: "Harmony Report",
+    selectRoomHeader: "Select Room Type",
+    selectRoomSubtitle: "Vastu Shastra rules vary significantly depending on the room's function. Select the room you wish to analyze.",
+    configureUploads: "Configure Uploads",
+    configurePhotosHeader: "Configure Photos",
+    configurePhotosSubtitle: "Upload one photograph facing each cardinal direction. Ensure rooms are well-lit and objects/furniture are clearly visible.",
+    compassGuideHeader: "Compass Guided Capture Guide",
+    compassGuideSub: "To ensure the AI maps your furniture layout accurately, follow these steps:",
+    compassStep1: "Stand directly in the center of the room.",
+    compassStep2: "Use your phone's compass app (or the interactive compass below) to locate each direction.",
+    compassStep3: "Turn to face that direction and photograph the entire wall directly in front of you.",
+    enableCompass: "Enable Active Compass",
+    changeRoom: "Change Room",
+    analyzeRoom: "Analyze Room Harmony",
+    readingEnergy: "Reading the Energy Alignment...",
+    reportTitle: "Vastu Alignment Report",
+    newAnalysis: "New Analysis",
+    scoreTitle: "Vastu Harmony Score",
+    energyTitle: "Elemental Energy State",
+    layoutTitle: "Layout Compliance",
+    interactiveMap: "Interactive Room Layout Map",
+    blueprint: "Blueprint",
+    purusha: "Purusha Mandala",
+    mapHint: "Tap on N, S, E, or W to inspect detailed Vastu properties",
+    all: "All Items",
+    critical: "Critical",
+    warning: "Warning",
+    warnings: "Warnings",
+    optimal: "Optimal",
+    noItemsMatching: "No items found matching the compliance level.",
+    remedyTitle: "Remedy / Action",
+    detected: "Detected",
+    ideal: "Ideal",
+    center: "Center",
+    refineHeader: "💡 Refine Vastu Analysis & Add Manual Adjustments",
+    refineDescription: "If the Vision AI misidentified an object or you want to manually configure the layout (e.g. \"There is no bed in this room\", \"Add a study desk on the North wall\"), type your adjustments below.",
+    refinePlaceholder: "Describe layout corrections or missing items... e.g. 'Actually, the stove is on the South-East wall' or 'Remove the mirror'...",
+    submitCorrection: "Submit Correction",
+    refiningLayout: "Refining Layout...",
+    faqTitle: "Frequently Asked Questions",
+    faqSub: "Learn more about Vastu Shastra architectural alignments, spatial layout remedies, and how VastuVision AI works.",
+    compassDeg: "Compass Heading",
+    dragDropText: "Drag & drop or click",
+    bedroom: "Bedroom",
+    kitchen: "Kitchen",
+    living_room: "Living Room",
+    pooja_room: "Pooja Room",
+    bathroom: "Bathroom",
+    bedroomDesc: "Focuses on sleeping direction, relationship harmony, and heavy wardrobe placement.",
+    kitchenDesc: "Evaluates the Fire element (stove), Water element (sink), and gas cylinder locations.",
+    living_roomDesc: "Assesses social dynamics, main guest seating, electronics, and positive energy entry.",
+    pooja_roomDesc: "Ensures maximum spiritual purity in the sacred Ishaan (North-East) corner.",
+    bathroomDesc: "Checks placement of drains, toilet seats, and waste vents to counter negative energy.",
+    north: "North",
+    south: "South",
+    east: "East",
+    west: "West",
+    cardinalDesc: "Stand in center, face direction, photo the wall",
+    faqList: [
+      {
+        q: "What is Vastu Shastra and how does it work?",
+        a: "Vastu Shastra is an ancient Indian architectural and spatial planning philosophy. It integrates nature's elements, directional alignments (using the Earth's magnetic field), and geometric grids to optimize energy flow (Prana) and harmony in living structures."
+      },
+      {
+        q: "How does VastuVision AI analyze room layouts?",
+        a: "Our app maps room layouts by prompting you to capture photos facing each cardinal wall (North, South, East, West). By matching camera images against orientation logs, our vision model identifies furniture positions, processes compliance scores, and flags layout errors with corrective actions."
+      },
+      {
+        q: "What is the ideal Vastu layout for a bedroom?",
+        a: "The master bedroom should ideally reside in the South-West (Nairutya) sector of the home for stability. Beds should face South or East when sleeping. Refrain from sleeping with your head pointing North, which creates electromagnetic friction with the body's polarity."
+      },
+      {
+        q: "What are Vastu guidelines for a kitchen layout?",
+        a: "A kitchen is associated with the fire element (Agni) and should ideally be placed in the South-East (Agneya) corner. The cooking stove must sit in the South-East of the room, and the cook should face East. Avoid placing the water sink adjacent to or facing the stove."
+      },
+      {
+        q: "Can AI-based corrections really fix Vastu errors?",
+        a: "Vastu Shastra focuses on spatial positioning. If physical structural renovation is impossible, Vastu recommends non-invasive remedies (e.g. repositioning furniture, placing copper/brass elements, or mirrors). VastuVision AI suggests these placement corrections so you can balance room energy without breaking walls."
+      },
+      {
+        q: "How do I refine layout items detected by the AI?",
+        a: "You can use the Refinement tool at the bottom of the report. Simply type manual inputs (e.g., 'Add door on East wall' or 'Remove bed') to re-evaluate compliance instantly. The system will incorporate your feedback and update the scorecard."
+      }
+    ]
+  },
+  nepali: {
+    appTitle: "वास्तुभिजन AI",
+    tagline: "स्मार्ट कोठा विश्लेषण र सद्भाव गाइड",
+    downloadApp: "Download Android App",
+    stepSelectRoom: "कोठा चयन",
+    stepUploadPhotos: "फोटो अपलोड",
+    stepHarmonyReport: "सद्भाव रिपोर्ट",
+    selectRoomHeader: "कोठाको प्रकार चयन गर्नुहोस्",
+    selectRoomSubtitle: "कोठाको कार्य अनुसार वास्तु शास्त्रका नियमहरू फरक हुन्छन्। तपाईंले विश्लेषण गर्न चाहेको कोठा चयन गर्नुहोस्।",
+    configureUploads: "अपलोडहरू कन्फिगर गर्नुहोस्",
+    configurePhotosHeader: "फोटोहरू कन्फिगर गर्नुहोस्",
+    configurePhotosSubtitle: "प्रत्येक दिशा तर्फ फर्किएर एक-एक फोटो अपलोड गर्नुहोस्। कोठामा पर्याप्त उज्यालो हुनुपर्छ र वस्तुहरू स्पष्ट देखिनुपर्छ।",
+    compassGuideHeader: "कम्पास निर्देशित क्याप्चर गाइड",
+    compassGuideSub: "एआईले तपाईंको फर्निचर लेआउट सही रूपमा नक्साङ्कन गर्न यी चरणहरू पालना गर्नुहोस्:",
+    compassStep1: "कोठाको ठीक बीचमा उभिनुहोस्।",
+    compassStep2: "प्रत्येक दिशा पत्ता लगाउन आफ्नो फोनको कम्पास एप (वा तलको कम्पास) प्रयोग गर्नुहोस्।",
+    compassStep3: "त्यस दिशा तर्फ फर्कनुहोस् र आफ्नो ठीक अगाडिको सम्पूर्ण भित्ताको फोटो खिच्नुहोस्।",
+    enableCompass: "कम्पास सक्रिय गर्नुहोस्",
+    changeRoom: "कोठा परिवर्तन",
+    analyzeRoom: "कोठाको सद्भाव विश्लेषण गर्नुहोस्",
+    readingEnergy: "ऊर्जाको सन्तुलन पढ्दै...",
+    reportTitle: "वास्तु सन्तुलन रिपोर्ट",
+    newAnalysis: "नयाँ विश्लेषण",
+    scoreTitle: "वास्तु सद्भाव स्कोर",
+    energyTitle: "पञ्चतत्व ऊर्जा अवस्था",
+    layoutTitle: "लेआउट अनुपालन",
+    interactiveMap: "इन्टरएक्टिभ कोठा लेआउट नक्सा",
+    blueprint: "नक्सा (ब्लुप्रिन्ट)",
+    purusha: "पुरुष मण्डल",
+    mapHint: "विस्तृत वास्तु गुणहरू हेर्न N, S, E, वा W मा ट्याप गर्नुहोस्",
+    all: "सबै वस्तुहरू",
+    critical: "गम्भीर त्रुटि",
+    warning: "चेतावनी",
+    warnings: "चेतावनीहरू",
+    optimal: "उत्तम",
+    noItemsMatching: "यस अनुपालन स्तरसँग मिल्ने कुनै चीजहरू फेला परेनन्।",
+    remedyTitle: "वास्तु उपाय / उपाय",
+    detected: "पत्ता लागेको",
+    ideal: "आदर्श",
+    center: "ब्रह्मस्थान (Center)",
+    refineHeader: "💡 वास्तु विश्लेषण परिमार्जन गर्नुहोस् र म्यानुअल समायोजनहरू थप्नुहोस्",
+    refineDescription: "यदि एआईले कुनै वस्तु गलत पहिचान गरेमा वा तपाईं म्यानुअल रूपमा लेआउट कन्फिगर गर्न चाहनुहुन्छ भने (जस्तै 'यस कोठामा ओछ्यान छैन', 'उत्तर भित्तामा पढ्ने टेबल थप्नुहोस्'), तल आफ्ना समायोजनहरू टाइप गर्नुहोस्।",
+    refinePlaceholder: "लेआउट सुधारहरू वा छुटेका वस्तुहरू वर्णन गर्नुहोस्... जस्तै 'वास्तवमा, चुलो दक्षिण-पूर्व भित्तामा छ' वा 'ऐना हटाउनुहोस्'...",
+    submitCorrection: "सुधार पेश गर्नुहोस्",
+    refiningLayout: "लेआउट परिमार्जन गर्दै...",
+    faqTitle: "बारम्बार सोधिने प्रश्नहरू",
+    faqSub: "वास्तु शास्त्रको ऊर्जा सन्तुलन, कोठाको व्यवस्थापन र वास्तुभिजन एआई कसरी काम गर्छ भन्ने बारे थप जान्नुहोस्।",
+    compassDeg: "कम्पास डिग्री",
+    dragDropText: "तान्नुहोस् र छोड्नुहोस् वा क्लिक गर्नुहोस्",
+    bedroom: "सुत्ने कोठा (बेडरुम)",
+    kitchen: "भान्सा कोठा (किचेन)",
+    living_room: "बैठक कोठा (लिभिङ रुम)",
+    pooja_room: "पूजा कोठा (पूजा रुम)",
+    bathroom: "शौचालय (बाथरुम)",
+    bedroomDesc: "सुत्ने दिशा, आपसी सम्बन्धको सामंजस्यता, र गह्रौं दराजको स्थानान्तरणमा ध्यान केन्द्रित गर्दछ।",
+    kitchenDesc: "अग्नि तत्व (चुलो), जल तत्व (सिंक), र ग्यास सिलिन्डरको स्थानको मूल्याङ्कन गर्दछ।",
+    living_roomDesc: "सामाजिक सम्बन्ध, मुख्य अतिथि बस्ने ठाउँ, इलेक्ट्रोनिक्स, र सकारात्मक ऊर्जा प्रवेशको मूल्याङ्कन गर्दछ।",
+    pooja_roomDesc: "पवित्र ईशान (उत्तर-पूर्व) कोणमा अधिकतम आध्यात्मिक शुद्धता सुनिश्चित गर्दछ।",
+    bathroomDesc: "नकारात्मक ऊर्जा कम गर्न ढल, शौचालय सिट र निकासको स्थान जाँच गर्दछ।",
+    north: "उत्तर (North)",
+    south: "दक्षिण (South)",
+    east: "पूर्व (East)",
+    west: "पश्चिम (West)",
+    cardinalDesc: "बीचमा उभिनुहोस्, दिशा सामना गर्नुहोस्, र भित्ताको फोटो खिच्नुहोस्",
+    faqList: [
+      {
+        q: "वास्तु शास्त्र के हो र यसले कसरी काम गर्छ?",
+        a: "वास्तु शास्त्र एक प्राचीन हिन्दु वास्तुकला र योजना दर्शन हो। यसले प्रकृति, दिशात्मक सन्तुलन (पृथ्वीको चुम्बकीय क्षेत्र प्रयोग गरेर) र ज्यामितीय ग्रिडहरूलाई एकीकृत गरी बस्ने ठाउँहरूमा ऊर्जा प्रवाह (प्राण) र सद्भावलाई अनुकूलन गर्छ।"
+      },
+      {
+        q: "वास्तुभिजन एआईले कोठाको लेआउट कसरी विश्लेषण गर्छ?",
+        a: "हाम्रो एपले कोठाको ठीक बीचबाट चारै दिशा (उत्तर, दक्षिण, पूर्व, पश्चिम) तर्फ फर्किएर खिचेका फोटोहरू स्क्यान गर्छ र दिशा सेन्सरसँग मिलान गरी फर्निचरहरूको स्थिति र वास्तु अनुपालन स्कोर मूल्याङ्कन गर्छ।"
+      },
+      {
+        q: "वास्तु शास्त्र अनुसार सुत्ने कोठा (बेडरुम) को लेआउट कस्तो हुनुपर्छ?",
+        a: "सुत्ने कोठा घरको दक्षिण-पश्चिम (नैऋत्य) कोणमा हुनु उत्तम मानिन्छ। सुत्दा टाउको सधैं दक्षिण वा पूर्व तर्फ हुनुपर्छ। उत्तर तर्फ टाउको राखेर कहिल्यै सुत्नु हुँदैन, यसले निद्रा र स्वास्थ्यमा बाधा पुर्‍याउँछ।"
+      },
+      {
+        q: "भान्सा कोठा (किचेन) को लागि वास्तु नियमहरू के हुन्?",
+        a: "भान्सा कोठा सधैं अग्नि तत्वको दिशा दक्षिण-पूर्व (आग्नेय) कोणमा हुनुपर्छ। खाना पकाउने चुलो दक्षिण-पूर्वमा हुनुपर्छ र पकाउने व्यक्तिको अनुहार पूर्व तर्फ हुनुपर्छ। पानीको सिंक (जल) र चुलो (अग्नि) लाई कहिल्यै सँगै राख्नु हुँदैन।"
+      },
+      {
+        q: "के एआई-आधारित सुधारहरूले वास्तवमै वास्तु दोषहरू समाधान गर्न सक्छन्?",
+        a: "वास्तु शास्त्रले मुख्य रूपमा कोठाको फर्निचर व्यवस्थापनमा जोड दिन्छ। यदि भौतिक रूपमा घर भत्काउन सम्भव छैन भने, फर्निचरको सही व्यवस्थापन, ऐनाको सही प्रयोग वा केही साधारण उपायहरूबाट वास्तु दोष कम गर्न सकिन्छ।"
+      },
+      {
+        q: "एआईले पहिचान गरेका फर्निचरहरू कसरी परिमार्जन गर्ने?",
+        a: "तपाईंले रिपोर्टको तल रहेको 'म्यानुअल सुधार' च्याट बक्समा गएर आफ्नो कोठाको फर्निचर परिमार्जन गर्न सक्नुहुन्छ (जस्तै: 'ऐना हटाउनुहोस्' वा 'उत्तर भित्तामा पढ्ने टेबल थप्नुहोस्')। एआईले सोही अनुसार रिपोर्ट र स्कोर तुरुन्त अपडेट गर्नेछ।"
+      }
+    ]
+  }
+};
+
+
 export default function Home() {
   // --- Core State ---
+  const [activeLanguage, setActiveLanguage] = useState<"english" | "nepali">("english");
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
   const [selectedRoom, setSelectedRoom] = useState<RoomType | null>(null);
   
@@ -101,6 +323,13 @@ export default function Home() {
     east: useRef<HTMLInputElement>(null),
     west: useRef<HTMLInputElement>(null)
   };
+
+  const t = (key: keyof typeof TRANSLATIONS.english) => {
+    return (TRANSLATIONS[activeLanguage] as any)[key] || (TRANSLATIONS.english as any)[key];
+  };
+
+  const sectorData = activeLanguage === "english" ? SECTOR_DATA_EN : SECTOR_DATA_NE;
+  const roomElements = activeLanguage === "english" ? ROOM_ELEMENTS_EN : ROOM_ELEMENTS_NE;
 
   // --- Helper: Compress and Encode Image ---
   const compressImage = (file: File, maxDim = 800, quality = 0.75): Promise<string> => {
@@ -253,7 +482,8 @@ export default function Home() {
         },
         body: JSON.stringify({
           room_type: selectedRoom,
-          images: uploadedImages
+          images: uploadedImages,
+          language: activeLanguage
         })
       });
 
@@ -294,7 +524,8 @@ export default function Home() {
         body: JSON.stringify({
           room_type: selectedRoom,
           previous_analysis: analysisResult,
-          correction: refinementText
+          correction: refinementText,
+          language: activeLanguage
         })
       });
 
@@ -435,14 +666,48 @@ export default function Home() {
             </svg>
             <div className="logo-text">
               <h1>
-                VastuVision <span>AI</span>
+                {t("appTitle")} <span>AI</span>
               </h1>
-              <p className="tagline">Smart Room Analysis & Harmony Guide</p>
+              <p className="tagline">{t("tagline")}</p>
             </div>
           </div>
-          <div className="status-indicator-bar">
+          <div className="status-indicator-bar" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div style={{ display: "flex", background: "rgba(15, 23, 42, 0.6)", padding: "2px", borderRadius: "8px", border: "1px solid rgba(51, 65, 85, 0.5)" }}>
+              <button
+                onClick={() => setActiveLanguage("english")}
+                style={{
+                  background: activeLanguage === "english" ? "var(--primary)" : "transparent",
+                  color: activeLanguage === "english" ? "#fff" : "#94a3b8",
+                  border: "none",
+                  padding: "4px 10px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "11px",
+                  fontWeight: "600",
+                  transition: "all 0.2s"
+                }}
+              >
+                EN
+              </button>
+              <button
+                onClick={() => setActiveLanguage("nepali")}
+                style={{
+                  background: activeLanguage === "nepali" ? "var(--primary)" : "transparent",
+                  color: activeLanguage === "nepali" ? "#fff" : "#94a3b8",
+                  border: "none",
+                  padding: "4px 10px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "11px",
+                  fontWeight: "600",
+                  transition: "all 0.2s"
+                }}
+              >
+                नेपाली
+              </button>
+            </div>
             <a href="/vastuvision.apk" download className="btn btn-download btn-xs">
-              <span>📥 Download Android App</span>
+              <span>📥 {activeLanguage === "english" ? "Download App" : "डाउनलोड एप"}</span>
             </a>
           </div>
         </div>
@@ -454,17 +719,17 @@ export default function Home() {
           <div className="stepper">
             <div className={`step ${currentStep >= 1 ? "active" : ""} ${currentStep > 1 ? "completed" : ""}`}>
               <div className="step-num">{currentStep > 1 ? "" : "1"}</div>
-              <div className="step-label">Select Room</div>
+              <div className="step-label">{t("stepSelectRoom")}</div>
             </div>
             <div className={`step-line ${currentStep > 1 ? "filled" : ""}`}></div>
             <div className={`step ${currentStep >= 2 ? "active" : ""} ${currentStep > 2 ? "completed" : ""}`}>
               <div className="step-num">{currentStep > 2 ? "" : "2"}</div>
-              <div className="step-label">Upload Photos</div>
+              <div className="step-label">{t("stepUploadPhotos")}</div>
             </div>
             <div className={`step-line ${currentStep > 2 ? "filled" : ""}`}></div>
             <div className={`step ${currentStep >= 4 ? "active" : ""}`}>
               <div className="step-num">3</div>
-              <div className="step-label">Harmony Report</div>
+              <div className="step-label">{t("stepHarmonyReport")}</div>
             </div>
           </div>
 
@@ -472,20 +737,20 @@ export default function Home() {
           {currentStep === 1 && (
             <section className="step-section active">
               <div className="section-header text-center">
-                <h2>Select Room Type</h2>
+                <h2>{t("selectRoomHeader")}</h2>
                 <p className="subtitle">
-                  Vastu Shastra rules vary significantly depending on the room&apos;s function. Select the room you wish to analyze.
+                  {t("selectRoomSubtitle")}
                 </p>
               </div>
 
               <div className="room-selector-grid">
                 {(["bedroom", "kitchen", "living_room", "pooja_room", "bathroom"] as RoomType[]).map((room) => {
                   const details = {
-                    bedroom: { icon: "🛏️", title: "Bedroom", desc: "Focuses on sleeping direction, relationship harmony, and heavy wardrobe placement." },
-                    kitchen: { icon: "🍳", title: "Kitchen", desc: "Evaluates the Fire element (stove), Water element (sink), and gas cylinder locations." },
-                    living_room: { icon: "🛋️", title: "Living Room", desc: "Assesses social dynamics, main guest seating, electronics, and positive energy entry." },
-                    pooja_room: { icon: "🙏", title: "Pooja Room", desc: "Ensures maximum spiritual purity in the sacred Ishaan (North-East) corner." },
-                    bathroom: { icon: "🚿", title: "Bathroom", desc: "Checks placement of drains, toilet seats, and waste vents to counter negative energy." }
+                    bedroom: { icon: "🛏️", title: t("bedroom"), desc: t("bedroomDesc") },
+                    kitchen: { icon: "🍳", title: t("kitchen"), desc: t("kitchenDesc") },
+                    living_room: { icon: "🛋️", title: t("living_room"), desc: t("living_roomDesc") },
+                    pooja_room: { icon: "🙏", title: t("pooja_room"), desc: t("pooja_roomDesc") },
+                    bathroom: { icon: "🚿", title: t("bathroom"), desc: t("bathroomDesc") }
                   }[room];
 
                   return (
@@ -508,7 +773,7 @@ export default function Home() {
                   disabled={!selectedRoom}
                   onClick={() => setCurrentStep(2)}
                 >
-                  <span>Configure Uploads</span>
+                  <span>{t("configureUploads")}</span>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polyline points="9 18 15 12 9 6" />
                   </svg>
@@ -521,9 +786,9 @@ export default function Home() {
           {currentStep === 2 && (
             <section className="step-section active">
               <div className="section-header text-center">
-                <h2>Configure {selectedRoom && getRoomNameFormatted(selectedRoom)} Photos</h2>
+                <h2>{t("configurePhotosHeader")} ({selectedRoom ? t(selectedRoom) : ""})</h2>
                 <p className="subtitle">
-                  Upload one photograph facing each cardinal direction. Ensure rooms are well-lit and objects/furniture are clearly visible.
+                  {t("configurePhotosSubtitle")}
                 </p>
               </div>
 
@@ -531,19 +796,19 @@ export default function Home() {
               <div className="capture-guide-box">
                 <div className="guide-icon">🧭</div>
                 <div className="guide-content">
-                  <h4>Compass Guided Capture Guide</h4>
-                  <p>To ensure the AI maps your furniture layout accurately, follow these steps:</p>
+                  <h4>{t("compassGuideHeader")}</h4>
+                  <p>{t("compassGuideSub")}</p>
                   <ol>
-                    <li>Stand directly in the <strong>center</strong> of the room.</li>
-                    <li>Use your phone&apos;s compass app (or the interactive compass below) to locate each direction.</li>
-                    <li>Turn to face that direction and photograph the <strong>entire wall directly in front of you</strong>.</li>
+                    <li>{t("compassStep1")}</li>
+                    <li>{t("compassStep2")}</li>
+                    <li>{t("compassStep3")}</li>
                   </ol>
 
                   {/* Web Compass Widget */}
                   <div className="web-compass-widget">
                     {!compassEnabled ? (
                       <button className="btn btn-secondary btn-xs" onClick={requestCompassPermission}>
-                        <span>Enable Active Compass</span>
+                        <span>{t("enableCompass")}</span>
                       </button>
                     ) : (
                       <div className="compass-display">
@@ -575,8 +840,8 @@ export default function Home() {
                   const headingText = { north: "0° / 360°", south: "180°", east: "90°", west: "270°" }[dir];
                   return (
                     <div key={dir} className="upload-card">
-                      <div className="card-direction">{getRoomNameFormatted(dir)}</div>
-                      <div className="card-desc">Stand in center, face {dir.toUpperCase()}, photo the wall</div>
+                      <div className="card-direction">{activeLanguage === "english" ? getRoomNameFormatted(dir) : t(dir as any)}</div>
+                      <div className="card-desc">{t("cardinalDesc")}</div>
                       
                       <div 
                         className={`drop-zone ${uploadedImages[dir] ? "has-file" : ""}`}
@@ -607,8 +872,8 @@ export default function Home() {
                             <svg className="upload-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
                             </svg>
-                            <p className="drag-text">Drag & drop or click</p>
-                            <span className="photo-hint">Compass Heading: {headingText}</span>
+                            <p className="drag-text">{t("dragDropText")}</p>
+                            <span className="photo-hint">{t("compassDeg")}: {headingText}</span>
                           </div>
                         ) : (
                           <div className="preview-container" style={{ display: "block" }}>
@@ -629,14 +894,14 @@ export default function Home() {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polyline points="15 18 9 12 15 6" />
                   </svg>
-                  <span>Change Room</span>
+                  <span>{t("changeRoom")}</span>
                 </button>
                 <button
                   className="btn btn-primary btn-glow"
                   disabled={!allUploaded}
                   onClick={startAnalysis}
                 >
-                  <span>Analyze Room Harmony</span>
+                  <span>{t("analyzeRoom")}</span>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
                   </svg>
@@ -655,7 +920,7 @@ export default function Home() {
                   <div className="loader-circle inner"></div>
                   <div className="sacred-geometry">⚛️</div>
                 </div>
-                <h2>Reading the Energy Alignment...</h2>
+                <h2>{t("readingEnergy")}</h2>
                 <p className="loader-status">{loadingStatus}</p>
                 <div className="progress-bar-container">
                   <div className="progress-bar-fill" style={{ width: `${loadingProgress}%` }}></div>
@@ -669,16 +934,16 @@ export default function Home() {
             <section className="step-section active">
               <div className="results-header">
                 <div className="results-header-info">
-                  <h2>Vastu Alignment Report</h2>
+                  <h2>{t("reportTitle")}</h2>
                   <p className="subtitle">
-                    {getRoomNameFormatted(analysisResult.room_type)} Analysis — Harmony Assessment
+                    {selectedRoom ? t(selectedRoom) : ""} {activeLanguage === "english" ? "Analysis — Harmony Assessment" : "विश्लेषण — सद्भाव मूल्याङ्कन"}
                   </p>
                 </div>
                 <button className="btn btn-secondary" onClick={resetAnalysis}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
                   </svg>
-                  <span>New Analysis</span>
+                  <span>{t("newAnalysis")}</span>
                 </button>
               </div>
 
@@ -686,7 +951,7 @@ export default function Home() {
               <div className="kpi-grid">
                 {/* Vastu Score KPI */}
                 <div className="kpi-card score-kpi">
-                  <h3>Vastu Harmony Score</h3>
+                  <h3>{t("scoreTitle")}</h3>
                   <div className="score-circle-container">
                     <svg className="score-ring" viewBox="0 0 120 120">
                       <circle className="score-ring-bg" cx="60" cy="60" r="50" />
@@ -702,18 +967,24 @@ export default function Home() {
                     </svg>
                     <div className="score-text-val">{animatedScore}</div>
                   </div>
-                  <p className="score-interpretation">{getScoreDescription(analysisResult.vastu_score)}</p>
+                  <p className="score-interpretation">
+                    {activeLanguage === "english" ? getScoreDescription(analysisResult.vastu_score) : (
+                      analysisResult.vastu_score < 60 ? "वास्तु सन्तुलन सुधार आवश्यक छ। गम्भीर दोषहरूले गर्दा ऊर्जा अवरुद्ध भएको छ।" :
+                      analysisResult.vastu_score < 85 ? "मध्यम वास्तु अनुपालन। स-साना सुधारहरूले कोठाको ऊर्जा प्रवाहमा ठूलो सुधार ल्याउनेछन्।" :
+                      "उत्कृष्ट वास्तु सन्तुलन। तपाईंको कोठामा आध्यात्मिक र भौतिक सद्भाव राम्रो छ।"
+                    )}
+                  </p>
                 </div>
 
                 {/* Energy Balance KPI */}
                 <div className="kpi-card energy-kpi">
-                  <h3>Elemental Energy State</h3>
-                  {selectedRoom && ROOM_ELEMENTS[selectedRoom] && (
+                  <h3>{t("energyTitle")}</h3>
+                  {selectedRoom && roomElements[selectedRoom] && (
                     <>
-                      <div className="energy-icon-box">{ROOM_ELEMENTS[selectedRoom].icon}</div>
+                      <div className="energy-icon-box">{roomElements[selectedRoom].icon}</div>
                       <div className="energy-details">
-                        <h4>{ROOM_ELEMENTS[selectedRoom].name}</h4>
-                        <p>{ROOM_ELEMENTS[selectedRoom].desc}</p>
+                        <h4>{roomElements[selectedRoom].name}</h4>
+                        <p>{roomElements[selectedRoom].desc}</p>
                       </div>
                     </>
                   )}
@@ -721,10 +992,10 @@ export default function Home() {
 
                 {/* Layout Compliance KPI */}
                 <div className="kpi-card breakdown-kpi">
-                  <h3>Layout Compliance</h3>
+                  <h3>{t("layoutTitle")}</h3>
                   <div className="stat-progress-row">
                     <div className="stat-progress-label">
-                      Optimal: <span>{counts.good}</span>
+                      {t("optimal")}: <span>{counts.good}</span>
                     </div>
                     <div className="stat-progress-bar">
                       <div
@@ -735,7 +1006,7 @@ export default function Home() {
                   </div>
                   <div className="stat-progress-row">
                     <div className="stat-progress-label">
-                      Warnings: <span>{counts.warning}</span>
+                      {t("warnings")}: <span>{counts.warning}</span>
                     </div>
                     <div className="stat-progress-bar">
                       <div
@@ -746,7 +1017,7 @@ export default function Home() {
                   </div>
                   <div className="stat-progress-row">
                     <div className="stat-progress-label">
-                      Critical: <span>{counts.critical}</span>
+                      {t("critical")}: <span>{counts.critical}</span>
                     </div>
                     <div className="stat-progress-bar">
                       <div
@@ -764,23 +1035,23 @@ export default function Home() {
                 <div className="results-map-col">
                   <div className="dash-card map-card">
                     <div className="card-header-with-action">
-                      <h3>Interactive Room Layout Map</h3>
+                      <h3>{t("interactiveMap")}</h3>
                       <div className="map-controls">
                         <button
                           className={`map-ctrl-btn ${gridMode === "blueprint" ? "active" : ""}`}
                           onClick={() => setGridMode("blueprint")}
                         >
-                          Blueprint
+                          {t("blueprint")}
                         </button>
                         <button
                           className={`map-ctrl-btn ${gridMode === "purusha" ? "active" : ""}`}
                           onClick={() => setGridMode("purusha")}
                         >
-                          Purusha Mandala
+                          {t("purusha")}
                         </button>
                       </div>
                     </div>
-                    <p className="card-hint">Tap on N, S, E, or W to inspect detailed Vastu properties</p>
+                    <p className="card-hint">{t("mapHint")}</p>
                     
                     <div className="compass-room-box">
                       <div className="direction-tag north" onClick={() => setSelectedSector("north")}>N</div>
@@ -808,7 +1079,7 @@ export default function Home() {
                         )}
                         
                         <div className="floorplan-cell cell-n" onClick={() => setSelectedSector("north")}>
-                          <div className="direction-lbl">North</div>
+                          <div className="direction-lbl">{t("north")}</div>
                           {getObjectsForDirection("north").map((obj, i) => (
                             <div key={i} className={`placed-item-tag ${obj.status}`} title={`${obj.name} (${obj.status})`}>
                               {getEmojiHelper(obj.name)} {obj.name}
@@ -816,10 +1087,10 @@ export default function Home() {
                           ))}
                         </div>
                         
-                        <div className="floorplan-cell cell-c">Center</div>
+                        <div className="floorplan-cell cell-c">{t("center")}</div>
                         
                         <div className="floorplan-cell cell-s" onClick={() => setSelectedSector("south")}>
-                          <div className="direction-lbl">South</div>
+                          <div className="direction-lbl">{t("south")}</div>
                           {getObjectsForDirection("south").map((obj, i) => (
                             <div key={i} className={`placed-item-tag ${obj.status}`} title={`${obj.name} (${obj.status})`}>
                               {getEmojiHelper(obj.name)} {obj.name}
@@ -828,7 +1099,7 @@ export default function Home() {
                         </div>
 
                         <div className="floorplan-cell cell-e" onClick={() => setSelectedSector("east")}>
-                          <div className="direction-lbl">East</div>
+                          <div className="direction-lbl">{t("east")}</div>
                           {getObjectsForDirection("east").map((obj, i) => (
                             <div key={i} className={`placed-item-tag ${obj.status}`} title={`${obj.name} (${obj.status})`}>
                               {getEmojiHelper(obj.name)} {obj.name}
@@ -837,7 +1108,7 @@ export default function Home() {
                         </div>
 
                         <div className="floorplan-cell cell-w" onClick={() => setSelectedSector("west")}>
-                          <div className="direction-lbl">West</div>
+                          <div className="direction-lbl">{t("west")}</div>
                           {getObjectsForDirection("west").map((obj, i) => (
                             <div key={i} className={`placed-item-tag ${obj.status}`} title={`${obj.name} (${obj.status})`}>
                               {getEmojiHelper(obj.name)} {obj.name}
@@ -857,25 +1128,25 @@ export default function Home() {
                       className={`tab-btn ${activeFilterTab === "all" ? "active" : ""}`}
                       onClick={() => setActiveFilterTab("all")}
                     >
-                      All Items (<span>{counts.all}</span>)
+                      {t("all")} (<span>{counts.all}</span>)
                     </button>
                     <button
                       className={`tab-btn ${activeFilterTab === "critical" ? "active" : ""}`}
                       onClick={() => setActiveFilterTab("critical")}
                     >
-                      Critical (<span>{counts.critical}</span>)
+                      {t("critical")} (<span>{counts.critical}</span>)
                     </button>
                     <button
                       className={`tab-btn ${activeFilterTab === "warning" ? "active" : ""}`}
                       onClick={() => setActiveFilterTab("warning")}
                     >
-                      Warnings (<span>{counts.warning}</span>)
+                      {t("warnings")} (<span>{counts.warning}</span>)
                     </button>
                     <button
                       className={`tab-btn ${activeFilterTab === "good" ? "active" : ""}`}
                       onClick={() => setActiveFilterTab("good")}
                     >
-                      Optimal (<span>{counts.good}</span>)
+                      {t("optimal")} (<span>{counts.good}</span>)
                     </button>
                   </div>
 
@@ -883,24 +1154,24 @@ export default function Home() {
                   <div className="suggestions-list">
                     {getFilteredObjectsList().length === 0 ? (
                       <div className="no-items-placeholder">
-                        No items found matching the &apos;{activeFilterTab}&apos; compliance level.
+                        {t("noItemsMatching")}
                       </div>
                     ) : (
                       getFilteredObjectsList().map((obj, i) => (
                         <div key={i} className="sugg-card">
                           <div className={`sugg-badge ${obj.status}`}>
-                            {obj.status === "critical" ? "Critical" : obj.status === "warning" ? "Warning" : "Optimal"}
+                            {obj.status === "critical" ? t("critical") : obj.status === "warning" ? t("warning") : t("optimal")}
                           </div>
                           <div className="sugg-info">
                             <div className="sugg-info-row">
                               <h4>{obj.name}</h4>
                               <div className="sugg-pos-details">
-                                Detected: <span>{obj.detected_direction}</span> | Ideal: <span>{obj.vastu_ideal}</span>
+                                {t("detected")}: <span>{obj.detected_direction}</span> | {t("ideal")}: <span>{obj.vastu_ideal}</span>
                               </div>
                             </div>
                             <p className="sugg-reason">{obj.reason}</p>
                             <div className={`sugg-advice-box ${obj.status}`}>
-                              <strong>Remedy / Action</strong>
+                              <strong>{t("remedyTitle")}</strong>
                               {obj.suggestion}
                             </div>
                           </div>
@@ -914,14 +1185,12 @@ export default function Home() {
               {/* Manual Correction & Refinement Chat */}
               <div className="refinement-section">
                 <div className="refinement-header">
-                  <h4>💡 Refine Vastu Analysis & Add Manual Adjustments</h4>
-                  <p>
-                    If the Vision AI misidentified an object or you want to manually configure the layout (e.g. <i>&quot;There is no bed in this room&quot;</i>, <i>&quot;Add a study desk on the North wall&quot;</i>), type your adjustments below.
-                  </p>
+                  <h4>{t("refineHeader")}</h4>
+                  <p>{t("refineDescription")}</p>
                 </div>
                 <div className="refinement-input-row">
                   <textarea
-                    placeholder="Describe layout corrections or missing items... e.g. 'Actually, the stove is on the South-East wall' or 'Remove the mirror'..."
+                    placeholder={t("refinePlaceholder")}
                     rows={2}
                     value={refinementText}
                     onChange={(e) => setRefinementText(e.target.value)}
@@ -934,14 +1203,14 @@ export default function Home() {
                   >
                     {refinementLoading ? (
                       <>
-                        <span>Refining Layout...</span>
+                        <span>{t("refiningLayout")}</span>
                         <svg className="spinner-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ animation: "spinClockwise 1s linear infinite" }}>
                           <line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
                         </svg>
                       </>
                     ) : (
                       <>
-                        <span>Submit Correction</span>
+                        <span>{t("submitCorrection")}</span>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <line x1="22" y1="2" x2="11" y2="13" />
                           <polygon points="22 2 15 22 11 13 2 9 22 2" />
@@ -957,46 +1226,16 @@ export default function Home() {
           {/* FAQ & Vastu Shastra Guide (SEO/GEO/AEO Optimization) */}
           <section className="faq-section text-center">
             <div className="faq-title-area">
-              <h2>Frequently Asked Questions</h2>
-              <p>Learn more about Vastu Shastra architectural alignments, spatial layout remedies, and how VastuVision AI works.</p>
+              <h2>{t("faqTitle")}</h2>
+              <p>{t("faqSub")}</p>
             </div>
             <div className="faq-grid">
-              <div className="faq-card">
-                <h3>What is Vastu Shastra and how does it work?</h3>
-                <p>
-                  Vastu Shastra is an ancient Indian architectural and spatial planning philosophy. It integrates nature&apos;s elements, directional alignments (using the Earth&apos;s magnetic field), and geometric grids to optimize energy flow (Prana) and harmony in living structures. VastuVision AI automates this layout verification by mapping object orientations relative to coordinates.
-                </p>
-              </div>
-              <div className="faq-card">
-                <h3>How does VastuVision AI analyze room layouts?</h3>
-                <p>
-                  Our app maps room layouts by prompting you to capture photos facing each cardinal wall (North, South, East, West). By matching camera images against orientation logs, our vision model identifies furniture positions (e.g. bed, stove, toilet), processes compliance scores, and flags layout errors with corrective actions.
-                </p>
-              </div>
-              <div className="faq-card">
-                <h3>What is the ideal Vastu layout for a bedroom?</h3>
-                <p>
-                  The master bedroom should ideally reside in the South-West (Nairutya) sector of the home for stability. Beds should face South or East when sleeping. Refrain from sleeping with your head pointing North, which creates electromagnetic friction with the body&apos;s polarity, resulting in poor sleep quality.
-                </p>
-              </div>
-              <div className="faq-card">
-                <h3>What are Vastu guidelines for a kitchen layout?</h3>
-                <p>
-                  A kitchen is associated with the fire element (Agni) and should ideally be placed in the South-East (Agneya) corner. The cooking stove must sit in the South-East of the room, and the cook should face East. Avoid placing the sink (water) adjacent to or facing the stove (fire) to prevent conflicting elements.
-                </p>
-              </div>
-              <div className="faq-card">
-                <h3>Can AI-based corrections really fix Vastu errors?</h3>
-                <p>
-                  Vastu Shastra focuses on spatial positioning. If physical structural renovation is impossible, Vastu recommends non-invasive remedies (e.g., repositioning furniture, placing copper/brass elements, or mirrors). VastuVision AI suggests these placement corrections so you can balance room energy without breaking walls.
-                </p>
-              </div>
-              <div className="faq-card">
-                <h3>How do I refine layout items detected by the AI?</h3>
-                <p>
-                  You can use the Refinement tool at the bottom of the report. Simply type manual inputs (e.g., &quot;Add door on East wall&quot; or &quot;Remove bed&quot;) to re-evaluate compliance instantly. The system will incorporate your feedback and update the scorecard.
-                </p>
-              </div>
+              {((TRANSLATIONS[activeLanguage] as any).faqList || TRANSLATIONS.english.faqList).map((faq: any, idx: number) => (
+                <div key={idx} className="faq-card">
+                  <h3>{faq.q}</h3>
+                  <p>{faq.a}</p>
+                </div>
+              ))}
             </div>
           </section>
         </div>
@@ -1013,7 +1252,7 @@ export default function Home() {
       </footer>
 
       {/* Interactive Blueprint Sector Info Modal */}
-      {selectedSector && SECTOR_DATA[selectedSector] && (
+      {selectedSector && sectorData[selectedSector] && (
         <div className="modal-overlay active" onClick={() => setSelectedSector(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <span className="modal-close" onClick={() => setSelectedSector(null)}>
@@ -1021,18 +1260,18 @@ export default function Home() {
             </span>
             <div className="modal-header-gold">
               <span className="modal-icon">🧭</span>
-              <h3>{SECTOR_DATA[selectedSector].title}</h3>
+              <h3>{sectorData[selectedSector].title}</h3>
             </div>
             <div className="modal-body-content">
-              <p className="modal-intro">{SECTOR_DATA[selectedSector].intro}</p>
+              <p className="modal-intro">{sectorData[selectedSector].intro}</p>
               <div className="modal-guide-details">
                 <div className="guide-item good">
-                  <strong>Ideal Placements (Positive Energy Flow):</strong>
-                  <span>{SECTOR_DATA[selectedSector].ideal}</span>
+                  <strong>{activeLanguage === "english" ? "Ideal Placements (Positive Energy Flow):" : "आदर्श स्थानान्तरण (सकारात्मक ऊर्जा प्रवाह):"}</strong>
+                  <span>{sectorData[selectedSector].ideal}</span>
                 </div>
                 <div className="guide-item bad">
-                  <strong>Avoid Placing (Energy Blockages):</strong>
-                  <span>{SECTOR_DATA[selectedSector].avoid}</span>
+                  <strong>{activeLanguage === "english" ? "Avoid Placing (Energy Blockages):" : "पन्हेज गर्नुपर्ने स्थानान्तरण (ऊर्जा अवरोध):"}</strong>
+                  <span>{sectorData[selectedSector].avoid}</span>
                 </div>
               </div>
             </div>

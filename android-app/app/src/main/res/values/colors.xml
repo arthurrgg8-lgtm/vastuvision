@@ -3,21 +3,21 @@
     <!-- Base backgrounds -->
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
-    <color name="bg_dark">#060810</color>
-    <color name="bg_elevated">#0c0f1a</color>
-    <color name="surface_card">#0e1123</color>
-    <color name="surface_input">#0a0c18</color>
-    <color name="surface_raised">#131523</color>
+    <color name="bg_dark">#070c12</color>
+    <color name="bg_elevated">#0d141f</color>
+    <color name="surface_card">#0f1826</color>
+    <color name="surface_input">#0a1019</color>
+    <color name="surface_raised">#152233</color>
 
     <!-- Primary brand -->
-    <color name="primary">#6366F1</color>
-    <color name="primary_dark">#4F46E5</color>
-    <color name="primary_light">#818CF8</color>
+    <color name="primary">#14b8a6</color>
+    <color name="primary_dark">#0d9488</color>
+    <color name="primary_light">#2dd4bf</color>
     <color name="indigo_primary">@color/primary</color>
 
     <!-- Gold accents -->
-    <color name="gold">#D4AF37</color>
-    <color name="gold_bright">#FFD700</color>
+    <color name="gold">#cca325</color>
+    <color name="gold_bright">#facc15</color>
     <color name="gold_accent">@color/gold</color>
 
     <!-- Text hierarchy -->

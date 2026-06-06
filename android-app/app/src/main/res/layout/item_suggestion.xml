@@ -80,6 +80,7 @@
             android:background="@drawable/bg_input_dark">
 
             <TextView
+                android:id="@+id/tvRemedyLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Vastu Remedy"

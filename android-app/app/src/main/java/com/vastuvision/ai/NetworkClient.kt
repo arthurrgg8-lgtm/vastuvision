@@ -9,6 +9,8 @@ import java.net.URL
 
 object NetworkClient {
 
+    var currentLanguage = "english"
+
     // Production Vercel deployment URL
     private const val BASE_URL = "https://vastuvision-beta.vercel.app"
     private const val ANALYZE_ENDPOINT = "$BASE_URL/api/analyze"
@@ -23,6 +25,7 @@ object NetworkClient {
         
         val payload = JSONObject().apply {
             put("room_type", roomType)
+            put("language", currentLanguage)
             put("images", JSONObject().apply {
                 base64Images.forEach { (dir, b64) ->
                     put(dir, b64)
@@ -42,6 +45,7 @@ object NetworkClient {
         
         val payload = JSONObject().apply {
             put("room_type", roomType)
+            put("language", currentLanguage)
             put("previous_analysis", JSONObject(previousAnalysisJson))
             put("correction", correction)
         }

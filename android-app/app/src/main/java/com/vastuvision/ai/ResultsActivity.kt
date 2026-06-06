@@ -57,6 +57,24 @@ class ResultsActivity : AppCompatActivity() {
             val score = json.optInt("vastu_score", 100)
             val objectsArray = json.optJSONArray("objects") ?: JSONArray()
 
+            // 0. Update UI Language
+            val lang = NetworkClient.currentLanguage
+            if (lang == "nepali") {
+                binding.tvResultsHeader.text = "वास्तु सन्तुलन रिपोर्ट"
+                binding.btnBackToMain.text = "बन्द गर्नुहोस्"
+                binding.btnSubmitRefine.text = "सुधार गर्नुहोस्"
+                binding.etRefineInput.hint = "सुधारहरू टाइप गर्नुहोस्: 'ओछ्यान हटाउनुहोस्'..."
+                binding.tvHarmonyLabel.text = "सद्भाव"
+                binding.tvGridCenter.text = "ब्रह्मस्थान"
+            } else {
+                binding.tvResultsHeader.text = "Vastu Harmony Report"
+                binding.btnBackToMain.text = "Close"
+                binding.btnSubmitRefine.text = "Refine"
+                binding.etRefineInput.hint = "Type corrections: 'Remove bed'..."
+                binding.tvHarmonyLabel.text = "HARMONY"
+                binding.tvGridCenter.text = "Center"
+            }
+
             // 1. Render Score
             binding.tvScoreVal.text = score.toString()
             when {
@@ -95,10 +113,15 @@ class ResultsActivity : AppCompatActivity() {
                 }
             }
 
-            binding.gridCellNorth.text = "N: " + (directionsMap["north"]?.joinToString(", ")?.ifEmpty { "-" } ?: "-")
-            binding.gridCellSouth.text = "S: " + (directionsMap["south"]?.joinToString(", ")?.ifEmpty { "-" } ?: "-")
-            binding.gridCellEast.text = "E: " + (directionsMap["east"]?.joinToString(", ")?.ifEmpty { "-" } ?: "-")
-            binding.gridCellWest.text = "W: " + (directionsMap["west"]?.joinToString(", ")?.ifEmpty { "-" } ?: "-")
+            val nPrefix = if (lang == "nepali") "उत्तर: " else "N: "
+            val sPrefix = if (lang == "nepali") "दक्षिण: " else "S: "
+            val ePrefix = if (lang == "nepali") "पूर्व: " else "E: "
+            val wPrefix = if (lang == "nepali") "पश्चिम: " else "W: "
+
+            binding.gridCellNorth.text = nPrefix + (directionsMap["north"]?.joinToString(", ")?.ifEmpty { "-" } ?: "-")
+            binding.gridCellSouth.text = sPrefix + (directionsMap["south"]?.joinToString(", ")?.ifEmpty { "-" } ?: "-")
+            binding.gridCellEast.text = ePrefix + (directionsMap["east"]?.joinToString(", ")?.ifEmpty { "-" } ?: "-")
+            binding.gridCellWest.text = wPrefix + (directionsMap["west"]?.joinToString(", ")?.ifEmpty { "-" } ?: "-")
 
             // 3. Render RecyclerView Suggestions
             binding.rvSuggestions.adapter = SuggestionsAdapter(suggestionsList)
@@ -109,9 +132,11 @@ class ResultsActivity : AppCompatActivity() {
     }
 
     private fun submitRefinement() {
+        val lang = NetworkClient.currentLanguage
         val correction = binding.etRefineInput.text.toString().trim()
         if (correction.isEmpty()) {
-            Toast.makeText(this, "Please type a correction statement first.", Toast.LENGTH_SHORT).show()
+            val emptyMsg = if (lang == "nepali") "कृपया पहिले सुधार विवरण टाइप गर्नुहोस्।" else "Please type a correction statement first."
+            Toast.makeText(this, emptyMsg, Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -146,14 +171,15 @@ class ResultsActivity : AppCompatActivity() {
 
                 // Refresh Layout
                 parseAndDisplayReport()
-                Toast.makeText(this@ResultsActivity, "Vastu report refined!", Toast.LENGTH_SHORT).show()
+                val successMsg = if (lang == "nepali") "वास्तु रिपोर्ट परिमार्जन भयो!" else "Vastu report refined!"
+                Toast.makeText(this@ResultsActivity, successMsg, Toast.LENGTH_SHORT).show()
 
             } catch (e: Exception) {
                 Toast.makeText(this@ResultsActivity, "Refinement Failed: ${e.message}", Toast.LENGTH_LONG).show()
             } finally {
                 binding.btnSubmitRefine.isEnabled = true
                 binding.etRefineInput.isEnabled = true
-                binding.btnSubmitRefine.text = "Refine"
+                binding.btnSubmitRefine.text = if (NetworkClient.currentLanguage == "nepali") "सुधार गर्नुहोस्" else "Refine"
             }
         }
     }
@@ -183,27 +209,53 @@ class ResultsActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = items[position]
             val binding = holder.binding
+            val lang = NetworkClient.currentLanguage
 
             binding.tvObjName.text = item.name
-            binding.tvObjPosition.text = "Detected: ${item.detectedDir} | Ideal: ${item.vastuIdeal}"
+            
+            val detectedText = if (lang == "nepali") "पत्ता लागेको" else "Detected"
+            val idealText = if (lang == "nepali") "आदर्श" else "Ideal"
+            binding.tvObjPosition.text = "$detectedText: ${item.detectedDir} | $idealText: ${item.vastuIdeal}"
             binding.tvReason.text = item.reason
             binding.tvRemedyText.text = item.remedy
+            
+            binding.tvRemedyLabel.text = if (lang == "nepali") "वास्तु उपाय" else "VASTU REMEDY"
 
             // Badge styling
-            binding.tvStatusBadge.text = item.status.uppercase()
-            when (item.status.lowercase()) {
-                "critical" -> {
-                    binding.tvStatusBadge.setBackgroundColor(Color.parseColor("#EF4444")) // Rose Red
-                    binding.layoutRemedy.setBackgroundColor(Color.parseColor("#26EF4444")) // 15% opacity Rose
+            if (lang == "nepali") {
+                when (item.status.lowercase()) {
+                    "critical" -> {
+                        binding.tvStatusBadge.text = "गम्भीर दोष"
+                        binding.tvStatusBadge.setBackgroundColor(Color.parseColor("#EF4444")) // Rose Red
+                        binding.layoutRemedy.setBackgroundColor(Color.parseColor("#26EF4444")) // 15% opacity Rose
+                    }
+                    "warning" -> {
+                        binding.tvStatusBadge.text = "चेतावनी"
+                        binding.tvStatusBadge.setBackgroundColor(Color.parseColor("#F59E0B")) // Amber Yellow
+                        binding.layoutRemedy.setBackgroundColor(Color.parseColor("#26F59E0B")) // 15% opacity Amber
+                    }
+                    else -> {
+                        binding.tvStatusBadge.text = "उत्तम"
+                        binding.tvStatusBadge.setBackgroundColor(Color.parseColor("#10B981")) // Emerald Green
+                        binding.layoutRemedy.setBackgroundColor(Color.parseColor("#2610B981")) // 15% opacity Emerald
+                    }
                 }
-                "warning" -> {
-                    binding.tvStatusBadge.setBackgroundColor(Color.parseColor("#F59E0B")) // Amber Yellow
-                    binding.layoutRemedy.setBackgroundColor(Color.parseColor("#26F59E0B")) // 15% opacity Amber
-                }
-                else -> {
-                    binding.tvStatusBadge.text = "OPTIMAL"
-                    binding.tvStatusBadge.setBackgroundColor(Color.parseColor("#10B981")) // Emerald Green
-                    binding.layoutRemedy.setBackgroundColor(Color.parseColor("#2610B981")) // 15% opacity Emerald
+            } else {
+                binding.tvStatusBadge.text = item.status.uppercase()
+                when (item.status.lowercase()) {
+                    "critical" -> {
+                        binding.tvStatusBadge.setBackgroundColor(Color.parseColor("#EF4444")) // Rose Red
+                        binding.layoutRemedy.setBackgroundColor(Color.parseColor("#26EF4444")) // 15% opacity Rose
+                    }
+                    "warning" -> {
+                        binding.tvStatusBadge.setBackgroundColor(Color.parseColor("#F59E0B")) // Amber Yellow
+                        binding.layoutRemedy.setBackgroundColor(Color.parseColor("#26F59E0B")) // 15% opacity Amber
+                    }
+                    else -> {
+                        binding.tvStatusBadge.text = "OPTIMAL"
+                        binding.tvStatusBadge.setBackgroundColor(Color.parseColor("#10B981")) // Emerald Green
+                        binding.layoutRemedy.setBackgroundColor(Color.parseColor("#2610B981")) // 15% opacity Emerald
+                    }
                 }
             }
         }

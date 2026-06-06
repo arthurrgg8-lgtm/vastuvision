@@ -24,6 +24,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.ByteArrayOutputStream
+import android.net.Uri
+import androidx.activity.result.contract.ActivityResultContracts
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -41,6 +43,14 @@ class CaptureActivity : AppCompatActivity(), CompassHelper.CompassListener {
     
     private val captureSteps = listOf("north", "south", "east", "west")
     private var currentStepIndex = 0
+
+    private val pickImageLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            handleGalleryUri(uri)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +71,21 @@ class CaptureActivity : AppCompatActivity(), CompassHelper.CompassListener {
         // 2. Setup button triggers
         binding.btnCapture.setOnClickListener { takePhoto() }
         binding.btnCancel.setOnClickListener { finish() }
+        binding.btnGallery.setOnClickListener { pickImageLauncher.launch("image/*") }
+
+        // Localize static button and loading texts
+        val lang = NetworkClient.currentLanguage
+        if (lang == "nepali") {
+            binding.btnCancel.text = "रद्द गर्नुहोस्"
+            binding.btnGallery.text = "ग्यालरी"
+            binding.tvLoadingStatus.text = "कोठाको वास्तु सन्तुलन विश्लेषण गर्दै..."
+            binding.tvLoadingSub.text = "वास्तुभिजन AI लाई अनुरोध पठाउँदै..."
+        } else {
+            binding.btnCancel.text = "Cancel"
+            binding.btnGallery.text = "Gallery"
+            binding.tvLoadingStatus.text = "Analyzing room layout alignment..."
+            binding.tvLoadingSub.text = "Sending request to VastuVision AI..."
+        }
 
         updateGuidanceUI()
     }
@@ -129,17 +154,40 @@ class CaptureActivity : AppCompatActivity(), CompassHelper.CompassListener {
     }
 
     private fun updateGuidanceUI() {
-        val step = captureSteps[currentStepIndex].uppercase()
-        binding.tvGuideHeader.text = "${currentStepIndex + 1}/4: Face $step Wall"
+        val currentDir = captureSteps[currentStepIndex]
+        val lang = NetworkClient.currentLanguage
+        
+        if (lang == "nepali") {
+            val stepLabel = when(currentDir) {
+                "north" -> "उत्तर (North)"
+                "south" -> "दक्षिण (South)"
+                "east" -> "पूर्व (East)"
+                "west" -> "पश्चिम (West)"
+                else -> currentDir.uppercase()
+            }
+            binding.tvGuideHeader.text = "${currentStepIndex + 1}/४: ${stepLabel} भित्ता हेर्नुहोस्"
 
-        val description = when(captureSteps[currentStepIndex]) {
-            "north" -> "Stand in the center. Turn to face NORTH (0° Heading) and shoot the wall directly in front of you."
-            "south" -> "Stand in the center. Turn to face SOUTH (180° Heading) and shoot the wall directly in front of you."
-            "east" -> "Stand in the center. Turn to face EAST (90° Heading) and shoot the wall directly in front of you."
-            "west" -> "Stand in the center. Turn to face WEST (270° Heading) and shoot the wall directly in front of you."
-            else -> ""
+            val description = when(currentDir) {
+                "north" -> "कोठाको बीचमा उभिनुहोस्। उत्तर तर्फ (०° डिग्री) फर्कनुहोस् र आफ्नो ठीक अगाडिको भित्ताको फोटो खिच्नुहोस्।"
+                "south" -> "कोठाको बीचमा उभिनुहोस्। दक्षिण तर्फ (१८०° डिग्री) फर्कनुहोस् र आफ्नो ठीक अगाडिको भित्ताको फोटो खिच्नुहोस्।"
+                "east" -> "कोठाको बीचमा उभिनुहोस्। पूर्व तर्फ (९०° डिग्री) फर्कनुहोस् र आफ्नो ठीक अगाडिको भित्ताको फोटो खिच्नुहोस्।"
+                "west" -> "कोठाको बीचमा उभिनुहोस्। पश्चिम तर्फ (२७०° डिग्री) फर्कनुहोस् र आफ्नो ठीक अगाडिको भित्ताको फोटो खिच्नुहोस्।"
+                else -> ""
+            }
+            binding.tvGuideDescription.text = description
+        } else {
+            val step = currentDir.uppercase()
+            binding.tvGuideHeader.text = "${currentStepIndex + 1}/4: Face $step Wall"
+
+            val description = when(currentDir) {
+                "north" -> "Stand in the center. Turn to face NORTH (0° Heading) and shoot the wall directly in front of you."
+                "south" -> "Stand in the center. Turn to face SOUTH (180° Heading) and shoot the wall directly in front of you."
+                "east" -> "Stand in the center. Turn to face EAST (90° Heading) and shoot the wall directly in front of you."
+                "west" -> "Stand in the center. Turn to face WEST (270° Heading) and shoot the wall directly in front of you."
+                else -> ""
+            }
+            binding.tvGuideDescription.text = description
         }
-        binding.tvGuideDescription.text = description
     }
 
     override fun onCompassUpdate(azimuth: Float, direction: String) {
@@ -286,6 +334,34 @@ class CaptureActivity : AppCompatActivity(), CompassHelper.CompassListener {
     override fun onDestroy() {
         super.onDestroy()
         cameraExecutor.shutdown()
+    }
+
+    private fun handleGalleryUri(uri: Uri) {
+        try {
+            contentResolver.openInputStream(uri).use { inputStream ->
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                if (bitmap != null) {
+                    val scaled = scaleBitmap(bitmap, 800)
+                    val base64 = bitmapToBase64(scaled)
+                    
+                    val currentDir = captureSteps[currentStepIndex]
+                    base64Images[currentDir] = base64
+
+                    // Advance to next direction
+                    if (currentStepIndex < captureSteps.size - 1) {
+                        currentStepIndex++
+                        updateGuidanceUI()
+                    } else {
+                        // Captured all 4 directions! Trigger analysis.
+                        uploadAndAnalyze()
+                    }
+                } else {
+                    Toast.makeText(this, "Failed to load gallery image.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Failed to read image: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     companion object {
