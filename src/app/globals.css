@@ -6,6 +6,9 @@
 
 /* ── Design Tokens ───────────────────────────────────────────────────────── */
 /* ── Base Reset ──────────────────────────────────────────────────────────── */
+html {
+    scroll-behavior: smooth;
+}
 html, body {
     overflow-x: hidden;
     overscroll-behavior: none;
@@ -76,6 +79,100 @@ html, body {
     --shadow-card-hover: 0 8px 40px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.35);
     --shadow-glow-gold: 0 0 30px rgba(250, 204, 21, 0.12);
     --shadow-glow-primary: 0 0 30px rgba(20, 184, 166, 0.14);
+}
+
+/* ── FAQ Header Link ───────────────────────────────────────────────────── */
+.faq-header-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-glass);
+    background: var(--surface-glass);
+    color: var(--text-muted);
+    font-family: var(--font-header);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    backdrop-filter: blur(8px);
+    white-space: nowrap;
+}
+
+.faq-header-link:hover {
+    border-color: var(--gold);
+    color: var(--gold-bright);
+    background: var(--gold-surface);
+    box-shadow: 0 0 12px var(--gold-glow);
+}
+
+.faq-link-text {
+    display: inline;
+}
+
+@media (max-width: 640px) {
+    .faq-link-text {
+        display: none;
+    }
+    .faq-header-link {
+        padding: 6px 8px;
+        font-size: 0.85rem;
+    }
+}
+
+/* ── Floating FAQ Quick-Access Button ──────────────────────────────────── */
+.faq-floating-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 999;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), #4f46e5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(79, 70, 229, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+    animation: faqFloat 3s ease-in-out infinite;
+}
+
+.faq-floating-btn:hover {
+    transform: scale(1.12);
+    box-shadow: 0 6px 28px rgba(79, 70, 229, 0.55);
+    border-color: var(--gold);
+}
+
+.faq-floating-btn:active {
+    transform: scale(0.95);
+}
+
+.faq-floating-btn span {
+    font-size: 1.3rem;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.3));
+}
+
+@keyframes faqFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+@media (max-width: 640px) {
+    .faq-floating-btn {
+        bottom: 16px;
+        right: 16px;
+        width: 44px;
+        height: 44px;
+    }
+    .faq-floating-btn span {
+        font-size: 1.1rem;
+    }
 }
 
 /* ── Theme Toggle Button ────────────────────────────────────────────────── */
