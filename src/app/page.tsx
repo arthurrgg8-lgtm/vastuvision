@@ -946,15 +946,6 @@ export default function Home() {
                 </div>
               </div>
               <div className="header-actions" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                {/* FAQ Quick Link */}
-                <a
-                  href="#faq-section"
-                  className="faq-header-link"
-                  title={t("faqTitle")}
-                >
-                  <span>❓</span>
-                  <span className="faq-link-text">FAQ</span>
-                </a>
                 {/* Theme Toggle */}
                 <button
                   onClick={cycleTheme}
@@ -1116,15 +1107,6 @@ export default function Home() {
             </div>
           </div>
           <div className="status-indicator-bar" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            {/* FAQ Quick Link */}
-            <a
-              href="#faq-section"
-              className="faq-header-link"
-              title={t("faqTitle")}
-            >
-              <span>❓</span>
-              <span className="faq-link-text">FAQ</span>
-            </a>
             {/* Theme Toggle */}
             <button
               onClick={cycleTheme}
@@ -1692,7 +1674,7 @@ export default function Home() {
           )}
 
           {/* FAQ & Vastu Shastra Guide (SEO/GEO/AEO Optimization) */}
-          <section id="faq-section" className="faq-section text-center">
+          <section className="faq-section text-center">
             <div className="faq-title-area">
               <h2>{t("faqTitle")}</h2>
               <p>{t("faqSub")}</p>
@@ -1712,16 +1694,6 @@ export default function Home() {
           </section>
         </div>
       </main>
-
-      {/* Floating FAQ Quick-Access Button */}
-      <a
-        href="#faq-section"
-        className="faq-floating-btn"
-        title={t("faqTitle")}
-        aria-label={t("faqTitle")}
-      >
-        <span>❓</span>
-      </a>
 
       {/* Footer */}
       <footer className="app-footer text-center">
