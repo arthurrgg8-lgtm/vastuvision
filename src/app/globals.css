@@ -2027,6 +2027,154 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
     100% { transform: scale(0.9); opacity: 0.6; }
 }
 
+/* ── FAQ Accordion (Compact, Always Visible) ─────────────────────────────── */
+.faq-section-compact {
+    margin-top: 16px;
+    margin-bottom: 20px;
+    padding: 20px 24px;
+    background: var(--surface-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(12px);
+}
+
+.faq-compact-title-area {
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.faq-compact-title-area h2 {
+    font-size: 1.35rem;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.faq-compact-title-area p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.5;
+}
+
+.faq-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-accordion-item {
+    background: rgba(0, 0, 0, 0.12);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    transition: border-color 0.3s var(--ease-smooth);
+}
+
+.faq-accordion-item:hover {
+    border-color: var(--border-glass-hover);
+}
+
+.faq-accordion-item.open {
+    border-color: rgba(250, 204, 21, 0.15);
+    background: rgba(250, 204, 21, 0.02);
+}
+
+.faq-accordion-question {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-family: var(--font-header);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: left;
+    transition: color 0.2s var(--ease-smooth);
+    outline: none;
+    line-height: 1.4;
+}
+
+.faq-accordion-question:hover {
+    color: var(--gold-bright);
+}
+
+.faq-accordion-item.open .faq-accordion-question {
+    color: var(--gold-bright);
+}
+
+.faq-q-text {
+    flex: 1;
+}
+
+.faq-accordion-arrow {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: transform 0.3s var(--ease-out-expo), color 0.3s var(--ease-out-expo);
+}
+
+.faq-accordion-arrow.open {
+    transform: rotate(180deg);
+    color: var(--gold);
+}
+
+.faq-accordion-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s var(--ease-out-expo);
+}
+
+.faq-accordion-item.open .faq-accordion-answer {
+    max-height: 260px;
+}
+
+.faq-accordion-answer p {
+    padding: 0 14px 14px 14px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+@media (max-width: 640px) {
+    .faq-section-compact {
+        padding: 16px;
+        margin-top: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .faq-compact-title-area h2 {
+        font-size: 1.15rem;
+    }
+
+    .faq-compact-title-area p {
+        font-size: 0.82rem;
+    }
+    
+    .faq-accordion-question {
+        font-size: 0.82rem;
+        padding: 10px 12px;
+    }
+    
+    .faq-accordion-answer p {
+        font-size: 0.82rem;
+        padding: 0 12px 12px 12px;
+    }
+}
+
 /* ── Responsive Design ───────────────────────────────────────────────────── */
 
 /* Tablets */
@@ -3056,7 +3204,36 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 380px;
+    min-height: 140px;
+}
+
+/* ── Simplified Splash Compass Icon ──────────────────────────────────── */
+.splash-compass-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(20, 184, 166, 0.1) 0%, transparent 70%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: splashCompassFloat 4s ease-in-out infinite;
+    border: 1px solid rgba(20, 184, 166, 0.08);
+}
+
+.splash-compass-emoji {
+    font-size: 2.4rem;
+    animation: splashCompassSpin 12s ease-in-out infinite;
+}
+
+@keyframes splashCompassFloat {
+    0%, 100% { transform: translateY(0); box-shadow: 0 0 20px rgba(20, 184, 166, 0.05); }
+    50% { transform: translateY(-8px); box-shadow: 0 0 40px rgba(20, 184, 166, 0.12); }
+}
+
+@keyframes splashCompassSpin {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(20deg); }
+    75% { transform: rotate(-20deg); }
 }
 
 .splash-loading-area {

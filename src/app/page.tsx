@@ -406,6 +406,15 @@ export default function Home() {
   const [activeFilterTab, setActiveFilterTab] = useState<"all" | "critical" | "warning" | "good">("all");
   const [gridMode, setGridMode] = useState<"blueprint" | "purusha">("blueprint");
   
+  // --- FAQ Accordion State ---
+  const [faqOpenIdxs, setFaqOpenIdxs] = useState<number[]>([]);
+  
+  const toggleFaq = (idx: number) => {
+    setFaqOpenIdxs((prev) =>
+      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
+    );
+  };
+  
   const [refinementText, setRefinementText] = useState("");
   const [refinementLoading, setRefinementLoading] = useState(false);
   const [selectedSector, setSelectedSector] = useState<string | null>(null);
@@ -994,52 +1003,8 @@ export default function Home() {
 
           <main className="splash-main-content">
             <div className="splash-visual-container">
-              <div className="vastu-hero-illustrator">
-                <div className="illustrator-ring ring-outer"></div>
-                <div className="illustrator-ring ring-middle"></div>
-                <div className="illustrator-ring ring-inner"></div>
-                
-                <div className="vastu-mandala-grid">
-                  <div className="grid-axis axis-h"></div>
-                  <div className="grid-axis axis-v"></div>
-                  <div className="grid-diagonal diag-1"></div>
-                  <div className="grid-diagonal diag-2"></div>
-                  <div className="grid-scanner"></div>
-
-                  <span className="cardinal-lbl lbl-n">{t("north")}</span>
-                  <span className="cardinal-lbl lbl-s">{t("south")}</span>
-                  <span className="cardinal-lbl lbl-e">{t("east")}</span>
-                  <span className="cardinal-lbl lbl-w">{t("west")}</span>
-
-                  <div className="aligning-furniture element-bed" title="Bed -> SW">
-                    <div className="furniture-icon-badge bed-badge">
-                      <span>🛏️</span>
-                      <span className="furniture-lbl">{activeLanguage === "english" ? "SW" : "नैऋत्य"}</span>
-                    </div>
-                  </div>
-                  <div className="aligning-furniture element-stove" title="Stove -> SE">
-                    <div className="furniture-icon-badge stove-badge">
-                      <span>🍳</span>
-                      <span className="furniture-lbl">{activeLanguage === "english" ? "SE" : "आग्नेय"}</span>
-                    </div>
-                  </div>
-                  <div className="aligning-furniture element-altar" title="Altar -> NE">
-                    <div className="furniture-icon-badge altar-badge">
-                      <span>🙏</span>
-                      <span className="furniture-lbl">{activeLanguage === "english" ? "NE" : "ईशान"}</span>
-                    </div>
-                  </div>
-                  <div className="aligning-furniture element-water" title="Water -> NW">
-                    <div className="furniture-icon-badge water-badge">
-                      <span>💧</span>
-                      <span className="furniture-lbl">{activeLanguage === "english" ? "NW" : "वायव्य"}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="illustrator-center-core">
-                  <span className="core-symbol">🧭</span>
-                </div>
+              <div className="splash-compass-icon">
+                <span className="splash-compass-emoji">🧭</span>
               </div>
             </div>
 
@@ -1175,6 +1140,41 @@ export default function Home() {
               <div className="step-label">{t("stepHarmonyReport")}</div>
             </div>
           </div>
+
+          {/* FAQ Section — Compact accordion, always visible on main page */}
+          <section className="faq-section-compact text-center">
+            <div className="faq-compact-title-area">
+              <h2>{t("faqTitle")}</h2>
+              <p>{t("faqSub")}</p>
+            </div>
+            <div className="faq-accordion">
+              {((TRANSLATIONS[activeLanguage] as any).faqList || TRANSLATIONS.english.faqList).map((faq: any, idx: number) => {
+                const isOpen = faqOpenIdxs.includes(idx);
+                return (
+                  <div
+                    key={idx}
+                    className={`faq-accordion-item ${isOpen ? "open" : ""}`}
+                  >
+                    <button
+                      className="faq-accordion-question"
+                      onClick={() => toggleFaq(idx)}
+                      aria-expanded={isOpen}
+                    >
+                      <span className="faq-q-text">{faq.q}</span>
+                      <span className={`faq-accordion-arrow ${isOpen ? "open" : ""}`}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg>
+                      </span>
+                    </button>
+                    <div className="faq-accordion-answer">
+                      <p>{faq.a}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
 
           {/* STEP 1: ROOM SELECTION */}
           {currentStep === 1 && (
@@ -1676,25 +1676,7 @@ export default function Home() {
         </div>
       </main>
 
-          {/* FAQ Section — Knowledge Base at bottom */}
-          <section className="faq-section text-center">
-            <div className="faq-title-area">
-              <h2>{t("faqTitle")}</h2>
-              <p>{t("faqSub")}</p>
-            </div>
-            <div className="faq-grid">
-              {((TRANSLATIONS[activeLanguage] as any).faqList || TRANSLATIONS.english.faqList).map((faq: any, idx: number) => (
-                <div
-                  key={idx}
-                  ref={setRevealRef(`faq-${idx}`)}
-                  className={`faq-card reveal ${idx % 2 === 0 ? "reveal-delay-1" : "reveal-delay-2"}`}
-                >
-                  <h3>{faq.q}</h3>
-                  <p>{faq.a}</p>
-                </div>
-              ))}
-            </div>
-          </section>
+
 
       {/* Footer */}
       <footer className="app-footer text-center">
