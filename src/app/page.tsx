@@ -288,6 +288,7 @@ const TRANSLATIONS = {
 export default function Home() {
   // --- Core State ---
   const [activeLanguage, setActiveLanguage] = useState<"english" | "nepali">("english");
+  const [showLanding, setShowLanding] = useState(true);
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
   const [selectedRoom, setSelectedRoom] = useState<RoomType | null>(null);
   
@@ -639,6 +640,189 @@ export default function Home() {
     setCompassEnabled(false);
     setCurrentStep(1);
   };
+
+  if (showLanding) {
+    return (
+      <>
+        {/* Background decorations */}
+        <div className="glow-bg glow-1"></div>
+        <div className="glow-bg glow-2"></div>
+        <div className="glow-bg glow-3"></div>
+
+        <div className="landing-page-wrapper">
+          <header className="landing-header">
+            <div className="container header-container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div className="logo-area" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <svg className="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style={{ width: "36px", height: "36px" }}>
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="url(#gold-grad-hero)" strokeWidth="2.5" />
+                  <rect x="25" y="25" width="50" height="50" fill="none" stroke="url(#gold-grad-hero)" strokeWidth="1.5" transform="rotate(45 50 50)" />
+                  <circle cx="50" cy="50" r="12" fill="url(#gold-grad-hero)" opacity="0.8" />
+                  <line x1="50" y1="5" x2="50" y2="95" stroke="url(#gold-grad-hero)" strokeWidth="1" strokeDasharray="2 2" />
+                  <line x1="5" y1="50" x2="95" y2="50" stroke="url(#gold-grad-hero)" strokeWidth="1" strokeDasharray="2 2" />
+                  <defs>
+                    <linearGradient id="gold-grad-hero" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#ffd700" />
+                      <stop offset="100%" stopColor="#b8860b" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div className="logo-text">
+                  <h1 style={{ fontSize: "1.25rem", fontWeight: "700" }}>
+                    {t("appTitle")} <span style={{ color: "var(--gold-bright)", fontSize: "0.8rem", verticalAlign: "super" }}>AI</span>
+                  </h1>
+                </div>
+              </div>
+              <div className="header-actions" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                <div style={{ display: "flex", background: "rgba(15, 23, 42, 0.6)", padding: "2px", borderRadius: "8px", border: "1px solid rgba(51, 65, 85, 0.5)" }}>
+                  <button
+                    onClick={() => setActiveLanguage("english")}
+                    style={{
+                      background: activeLanguage === "english" ? "var(--primary)" : "transparent",
+                      color: activeLanguage === "english" ? "#fff" : "#94a3b8",
+                      border: "none",
+                      padding: "4px 10px",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      fontSize: "11px",
+                      fontWeight: "600",
+                      transition: "all 0.2s"
+                    }}
+                  >
+                    EN
+                  </button>
+                  <button
+                    onClick={() => setActiveLanguage("nepali")}
+                    style={{
+                      background: activeLanguage === "nepali" ? "var(--primary)" : "transparent",
+                      color: activeLanguage === "nepali" ? "#fff" : "#94a3b8",
+                      border: "none",
+                      padding: "4px 10px",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      fontSize: "11px",
+                      fontWeight: "600",
+                      transition: "all 0.2s"
+                    }}
+                  >
+                    नेपाली
+                  </button>
+                </div>
+                <a href="/vastuvision.apk" download className="btn btn-download btn-xs" style={{ textDecoration: "none" }}>
+                  <span>📥 {activeLanguage === "english" ? "Download App" : "डाउनलोड एप"}</span>
+                </a>
+              </div>
+            </div>
+          </header>
+
+          <section className="landing-hero-section">
+            <div className="container hero-container">
+              <div className="hero-text-side">
+                <span className="hero-badge">
+                  ✨ {activeLanguage === "english" ? "Next-Gen Spatial Vastu Shastra Analytics" : "अर्को पुस्ताको वास्तु शास्त्र विश्लेषण"}
+                </span>
+                <h2>
+                  {activeLanguage === "english" ? "Unlock the Natural Harmony of Your Home" : "तपाईंको घरको प्राकृतिक सद्भाव पत्ता लगाउनुहोस्"}
+                </h2>
+                <p>
+                  {activeLanguage === "english" 
+                    ? "VastuVision AI combines traditional Vastu Shastra architectural principles with advanced computer vision to analyze room layouts, furniture alignments, and energy currents, providing instant remedies for ultimate peace and prosperity."
+                    : "वास्तुभिजन एआईले आधुनिक कम्प्युटर भिजन र परम्परागत वास्तु शास्त्र सिद्धान्तहरू मिलाएर कोठाको सजावट, फर्निचरको स्थिति र ऊर्जा प्रवाहको विश्लेषण गर्दछ र पूर्ण शान्ति र समृद्धिका लागि तत्कालै वास्तु उपायहरू प्रदान गर्दछ।"}
+                </p>
+                
+                <div className="hero-cta-area">
+                  <button className="btn btn-primary btn-lg btn-glow" onClick={() => setShowLanding(false)}>
+                    <span>{activeLanguage === "english" ? "Begin Space Analysis" : "स्थान विश्लेषण सुरु गर्नुहोस्"}</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginLeft: "8px", verticalAlign: "middle" }}>
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  </button>
+                  <a href="/vastuvision.apk" download className="btn btn-secondary btn-lg" style={{ textDecoration: "none" }}>
+                    <span>📥 {activeLanguage === "english" ? "Download Android App" : "एन्ड्रोइड एप डाउनलोड गर्नुहोस्"}</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="hero-animation-side">
+                <div className="vastu-hero-illustrator">
+                  <div className="illustrator-ring ring-outer"></div>
+                  <div className="illustrator-ring ring-middle"></div>
+                  <div className="illustrator-ring ring-inner"></div>
+                  
+                  <div className="vastu-mandala-grid">
+                    <div className="grid-axis axis-h"></div>
+                    <div className="grid-axis axis-v"></div>
+                    <div className="grid-diagonal diag-1"></div>
+                    <div className="grid-diagonal diag-2"></div>
+                    <div className="grid-scanner"></div>
+
+                    <span className="cardinal-lbl lbl-n">{t("north")}</span>
+                    <span className="cardinal-lbl lbl-s">{t("south")}</span>
+                    <span className="cardinal-lbl lbl-e">{t("east")}</span>
+                    <span className="cardinal-lbl lbl-w">{t("west")}</span>
+
+                    <div className="aligning-furniture element-bed" title="Bed -> SW">🛏️</div>
+                    <div className="aligning-furniture element-stove" title="Stove -> SE">🍳</div>
+                    <div className="aligning-furniture element-altar" title="Altar -> NE">🙏</div>
+                    <div className="aligning-furniture element-water" title="Water -> NW">💧</div>
+                  </div>
+
+                  <div className="illustrator-center-core">
+                    <span className="core-symbol">🧭</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="workflow-info-section">
+            <div className="container">
+              <h3 className="workflow-title text-center">
+                {activeLanguage === "english" ? "How VastuVision AI Works" : "वास्तुभिजन एआईले कसरी काम गर्छ"}
+              </h3>
+              <div className="workflow-steps-grid">
+                <div className="workflow-step-card">
+                  <div className="step-num-icon">1</div>
+                  <h4>{activeLanguage === "english" ? "Select & Upload" : "कोठा रोज्नुहोस् र फोटो हाल्नुहोस्"}</h4>
+                  <p>
+                    {activeLanguage === "english"
+                      ? "Choose a room (Bedroom, Kitchen, Pooja Room) and upload wall photos facing each cardinal direction."
+                      : "कोठाको प्रकार रोजेर चारै दिशा तर्फ फर्किएर खिचेका फोटोहरू अपलोड वा स्क्यान गर्नुहोस्।"}
+                  </p>
+                </div>
+                <div className="workflow-step-card">
+                  <div className="step-num-icon">2</div>
+                  <h4>{activeLanguage === "english" ? "AI Spatial Analysis" : "एआई लेआउट स्क्यान"}</h4>
+                  <p>
+                    {activeLanguage === "english"
+                      ? "Advanced Vision models map room coordinates and check placement configurations against Vastu rules."
+                      : "हाम्रो एआई मोडेलले कोठाका फर्निचरहरूको सही दिशा पत्ता लगाई पञ्चतत्व र ऊर्जा सन्तुलन जाँच गर्छ।"}
+                  </p>
+                </div>
+                <div className="workflow-step-card">
+                  <div className="step-num-icon">3</div>
+                  <h4>{activeLanguage === "english" ? "Get Remedies & Refine" : "उपाय प्राप्त गर्नुहोस् र सच्याउनुहोस्"}</h4>
+                  <p>
+                    {activeLanguage === "english"
+                      ? "Review compliance scores, download blueprints, and write manual corrections to refine alignments instantly."
+                      : "वास्तु अनुपालन स्कोर र नक्सा हेर्नुहोस् र म्यानुअल सुधारहरू च्याट मार्फत तुरुन्तै अपडेट गर्नुहोस्।"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <footer className="landing-footer text-center">
+            <p>
+              &copy; 2026 VastuVision AI. Developed by{" "}
+              <a href="https://anuditk.vercel.app" target="_blank" rel="noopener noreferrer" style={{ color: "var(--gold-bright)", textDecoration: "underline" }}>
+                LazZy
+              </a>
+            </p>
+          </footer>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>

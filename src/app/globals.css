@@ -1867,3 +1867,396 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
     to { opacity: 1; transform: scale(1); }
 }
 
+/* ── Landing Page Styles ────────────────────────────────────────────────── */
+.landing-page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    position: relative;
+}
+
+.landing-header {
+    background: rgba(7, 12, 18, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-glass);
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.landing-hero-section {
+    padding: 80px 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-container {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 48px;
+    align-items: center;
+}
+
+@media (max-width: 991px) {
+    .hero-container {
+        grid-template-columns: 1fr;
+        gap: 60px;
+        text-align: center;
+    }
+}
+
+.hero-text-side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+@media (max-width: 991px) {
+    .hero-text-side {
+        align-items: center;
+    }
+}
+
+.hero-badge {
+    background: rgba(20, 184, 166, 0.08);
+    border: 1px solid rgba(20, 184, 166, 0.25);
+    color: var(--primary-hover);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    margin-bottom: 24px;
+    display: inline-block;
+    animation: pulseBadge 3s ease-in-out infinite;
+}
+
+@keyframes pulseBadge {
+    0%, 100% { border-color: rgba(20, 184, 166, 0.25); box-shadow: 0 0 0 rgba(20, 184, 166, 0); }
+    50% { border-color: rgba(20, 184, 166, 0.6); box-shadow: 0 0 12px rgba(20, 184, 166, 0.2); }
+}
+
+.hero-text-side h2 {
+    font-size: clamp(2.2rem, 5vw, 3.25rem);
+    line-height: 1.15;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #fff 30%, var(--text-secondary) 70%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-text-side p {
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin-bottom: 36px;
+    max-width: 600px;
+}
+
+.hero-cta-area {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 991px) {
+    .hero-cta-area {
+        justify-content: center;
+    }
+}
+
+.hero-animation-side {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ── Minimal Premium Vastu Illustrator ──────────────────────────────────── */
+.vastu-hero-illustrator {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (min-width: 1200px) {
+    .vastu-hero-illustrator {
+        width: 380px;
+        height: 380px;
+    }
+}
+
+.illustrator-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(20, 184, 166, 0.08);
+    pointer-events: none;
+}
+
+.ring-outer {
+    width: 100%;
+    height: 100%;
+    animation: ringRipple 8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.ring-middle {
+    width: 80%;
+    height: 80%;
+    animation: ringRipple 8s cubic-bezier(0.16, 1, 0.3, 1) infinite 2s;
+}
+
+.ring-inner {
+    width: 60%;
+    height: 60%;
+    animation: ringRipple 8s cubic-bezier(0.16, 1, 0.3, 1) infinite 4s;
+}
+
+@keyframes ringRipple {
+    0% { transform: scale(0.6); opacity: 0; border-color: rgba(20, 184, 166, 0.02); }
+    15% { opacity: 0.8; border-color: rgba(20, 184, 166, 0.12); }
+    100% { transform: scale(1.15); opacity: 0; border-color: rgba(250, 204, 21, 0.01); }
+}
+
+.vastu-mandala-grid {
+    position: absolute;
+    width: 76%;
+    height: 76%;
+    border-radius: 50%;
+    border: 1.5px solid rgba(212, 175, 55, 0.15);
+    background: rgba(13, 20, 31, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: inset 0 0 20px rgba(20, 184, 166, 0.05), var(--shadow-card);
+    animation: rotateMandala 60s linear infinite;
+}
+
+@keyframes rotateMandala {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.grid-axis {
+    position: absolute;
+    background: rgba(250, 204, 21, 0.08);
+}
+
+.axis-h {
+    top: 50%; left: 5%;
+    width: 90%; height: 1px;
+}
+
+.axis-v {
+    left: 50%; top: 5%;
+    width: 1px; height: 90%;
+}
+
+.grid-diagonal {
+    position: absolute;
+    background: rgba(20, 184, 166, 0.04);
+}
+
+.diag-1 {
+    top: 50%; left: 5%;
+    width: 90%; height: 1px;
+    transform: rotate(45deg);
+}
+
+.diag-2 {
+    top: 50%; left: 5%;
+    width: 90%; height: 1px;
+    transform: rotate(-45deg);
+}
+
+.grid-scanner {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--primary-glow) 0deg, transparent 40deg, transparent 360deg);
+    pointer-events: none;
+    animation: scanSweep 8s linear infinite;
+}
+
+@keyframes scanSweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+}
+
+.cardinal-lbl {
+    position: absolute;
+    font-family: var(--font-header);
+    font-weight: 700;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    background: var(--bg-dark);
+    padding: 2px 5px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.lbl-n { top: -8px; left: 50%; transform: translateX(-50%); }
+.lbl-s { bottom: -8px; left: 50%; transform: translateX(-50%); }
+.lbl-e { right: -8px; top: 50%; transform: translateY(-50%); }
+.lbl-w { left: -8px; top: 50%; transform: translateY(-50%); }
+
+.aligning-furniture {
+    position: absolute;
+    font-size: 1.25rem;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+    animation: floatFurniture 4s ease-in-out infinite;
+}
+
+@keyframes floatFurniture {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-6px) scale(1.05); }
+}
+
+.element-bed {
+    bottom: 20%; left: 20%;
+    animation-delay: 0s;
+}
+
+.element-stove {
+    bottom: 20%; right: 20%;
+    animation-delay: 1s;
+}
+
+.element-altar {
+    top: 20%; right: 20%;
+    animation-delay: 2s;
+}
+
+.element-water {
+    top: 20%; left: 20%;
+    animation-delay: 3s;
+}
+
+.illustrator-center-core {
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--gold-bright) 0%, var(--gold) 100%);
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 20px var(--gold-glow);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    animation: corePulse 4s ease-in-out infinite;
+}
+
+@keyframes corePulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 15px var(--gold-glow); }
+    50% { transform: scale(1.08); box-shadow: 0 0 28px rgba(250, 204, 21, 0.45); }
+}
+
+.core-symbol {
+    font-size: 1.1rem;
+    animation: spinCompass 16s ease-in-out infinite;
+}
+
+@keyframes spinCompass {
+    0%, 100% { transform: rotate(0deg); }
+    30% { transform: rotate(90deg); }
+    70% { transform: rotate(-45deg); }
+}
+
+/* ── Workflow Info section ─────────────────────────────────────────── */
+.workflow-info-section {
+    padding: 80px 0;
+    background: linear-gradient(180deg, transparent, rgba(13, 20, 31, 0.4) 100%);
+    border-top: 1px solid var(--border-glass);
+}
+
+.workflow-title {
+    margin-bottom: 48px;
+    color: var(--text-primary);
+    font-family: var(--font-header);
+    letter-spacing: -0.01em;
+}
+
+.workflow-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 768px) {
+    .workflow-steps-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+}
+
+.workflow-step-card {
+    background: var(--surface-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: var(--transition-smooth);
+}
+
+.workflow-step-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--border-glass-hover);
+    box-shadow: var(--shadow-card-hover);
+    background: var(--surface-glass-hover);
+}
+
+.step-num-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(20, 184, 166, 0.12);
+    border: 1px solid rgba(20, 184, 166, 0.3);
+    color: var(--primary-hover);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+    font-family: var(--font-header);
+}
+
+.workflow-step-card h4 {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.workflow-step-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.landing-footer {
+    padding: 32px 0;
+    border-top: 1px solid var(--border-glass);
+    background: var(--bg-dark);
+}
+
+.landing-footer p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
