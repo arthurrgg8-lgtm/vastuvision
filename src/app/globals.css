@@ -72,8 +72,315 @@
     --shadow-glow-primary: 0 0 30px rgba(20, 184, 166, 0.16);
 }
 
-/* ── Light Mode Overrides ────────────────────────────────────────────────── */
+/* ── Theme Toggle Button ────────────────────────────────────────────────── */
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border-glass);
+    background: var(--surface-glass);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    backdrop-filter: blur(8px);
+    position: relative;
+    outline: none;
+}
+
+.theme-toggle-btn:hover {
+    border-color: var(--border-glass-hover);
+    background: var(--surface-glass-hover);
+    transform: rotate(15deg);
+    box-shadow: var(--shadow-glow-gold);
+}
+
+.theme-toggle-btn:active {
+    transform: rotate(30deg) scale(0.95);
+}
+
+.theme-toggle-icon {
+    font-size: 1rem;
+    line-height: 1;
+    filter: drop-shadow(0 0 4px var(--gold-glow));
+    transition: var(--transition-smooth);
+}
+
+/* ── Light Mode Overrides (System + Manual) ──────────────────────────────── */
 @media (prefers-color-scheme: light) {
+    :root {
+        --color-scheme: light;
+
+        --bg-dark: #f1f5f9;
+        --bg-elevated: #ffffff;
+        --surface-glass: rgba(255, 255, 255, 0.72);
+        --surface-glass-hover: rgba(255, 255, 255, 0.88);
+        --surface-glass-strong: rgba(255, 255, 255, 0.95);
+        --border-glass: rgba(148, 163, 184, 0.15);
+        --border-glass-hover: rgba(20, 184, 166, 0.25);
+        --border-active: rgba(20, 184, 166, 0.5);
+
+        --primary: #0d9488;
+        --primary-hover: #14b8a6;
+        --primary-glow: rgba(13, 148, 136, 0.15);
+        --primary-surface: rgba(13, 148, 136, 0.05);
+
+        --gold: #a16207;
+        --gold-bright: #ca8a04;
+        --gold-glow: rgba(202, 138, 4, 0.12);
+        --gold-surface: rgba(202, 138, 4, 0.04);
+
+        --text-primary: #0f172a;
+        --text-secondary: #334155;
+        --text-muted: #64748b;
+
+        --status-good: #059669;
+        --status-good-bg: rgba(5, 150, 105, 0.08);
+        --status-good-text: #065f46;
+        --status-warning: #d97706;
+        --status-warning-bg: rgba(217, 119, 6, 0.08);
+        --status-warning-text: #78350f;
+        --status-critical: #dc2626;
+        --status-critical-bg: rgba(220, 38, 38, 0.08);
+        --status-critical-text: #991b1b;
+
+        --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+        --shadow-card-hover: 0 8px 40px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.05);
+        --shadow-glow-gold: 0 0 30px rgba(202, 138, 4, 0.08);
+        --shadow-glow-primary: 0 0 30px rgba(13, 148, 136, 0.08);
+    }
+
+    .glow-bg {
+        opacity: 0.12 !important;
+    }
+
+    .glow-1 { background: radial-gradient(circle, #0d9488 0%, transparent 70%) !important; }
+    .glow-2 { background: radial-gradient(circle, rgba(202, 138, 4, 0.2) 0%, transparent 70%) !important; }
+    .glow-3 { background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%) !important; }
+
+    .logo-text h1 {
+        background: linear-gradient(135deg, #0f172a 50%, #ca8a04);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .app-header {
+        background: rgba(255, 255, 255, 0.80);
+        border-bottom-color: rgba(148, 163, 184, 0.2);
+    }
+
+    .drop-zone { background: rgba(0, 0, 0, 0.03); }
+    
+    .section-header h2 {
+        background: linear-gradient(135deg, #0f172a 60%, #ca8a04);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .room-floorplan {
+        background-image:
+            linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .purusha-overlay svg line { stroke: rgba(161, 98, 7, 0.2) !important; }
+
+    .sugg-advice-box { background: rgba(0, 0, 0, 0.02); }
+
+    .web-compass-widget {
+        border-top-color: rgba(0, 0, 0, 0.08);
+    }
+
+    .app-footer { border-top-color: rgba(148, 163, 184, 0.2); }
+    
+    .landing-header {
+        background: rgba(255, 255, 255, 0.7);
+        border-bottom-color: rgba(148, 163, 184, 0.2);
+    }
+
+    .modal-content {
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-overlay {
+        background: rgba(241, 245, 249, 0.88);
+    }
+
+    .system-hud-card {
+        background: rgba(255, 255, 255, 0.65);
+        border-color: rgba(0, 0, 0, 0.08);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+    }
+
+    .hud-visual-display {
+        background: rgba(241, 245, 249, 0.6);
+    }
+
+    .hud-score-ring::after {
+        background: #ffffff;
+    }
+
+    .hud-score-val { color: #0f172a; }
+
+    .vastu-mandala-grid {
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    .furniture-icon-badge {
+        background: rgba(255, 255, 255, 0.85);
+        border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .furniture-lbl {
+        background: rgba(241, 245, 249, 0.9);
+    }
+
+    .cardinal-lbl {
+        background: #ffffff;
+        border-color: rgba(0, 0, 0, 0.08);
+    }
+}
+
+/* ── Manual Light Mode Override (via data-theme) ─────────────────────────── */
+[data-theme="light"] {
+    --color-scheme: light;
+
+    --bg-dark: #f1f5f9;
+    --bg-elevated: #ffffff;
+    --surface-glass: rgba(255, 255, 255, 0.72);
+    --surface-glass-hover: rgba(255, 255, 255, 0.88);
+    --surface-glass-strong: rgba(255, 255, 255, 0.95);
+    --border-glass: rgba(148, 163, 184, 0.15);
+    --border-glass-hover: rgba(20, 184, 166, 0.25);
+    --border-active: rgba(20, 184, 166, 0.5);
+
+    --primary: #0d9488;
+    --primary-hover: #14b8a6;
+    --primary-glow: rgba(13, 148, 136, 0.15);
+    --primary-surface: rgba(13, 148, 136, 0.05);
+
+    --gold: #a16207;
+    --gold-bright: #ca8a04;
+    --gold-glow: rgba(202, 138, 4, 0.12);
+    --gold-surface: rgba(202, 138, 4, 0.04);
+
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-muted: #64748b;
+
+    --status-good: #059669;
+    --status-good-bg: rgba(5, 150, 105, 0.08);
+    --status-good-text: #065f46;
+    --status-warning: #d97706;
+    --status-warning-bg: rgba(217, 119, 6, 0.08);
+    --status-warning-text: #78350f;
+    --status-critical: #dc2626;
+    --status-critical-bg: rgba(220, 38, 38, 0.08);
+    --status-critical-text: #991b1b;
+
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-card-hover: 0 8px 40px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-glow-gold: 0 0 30px rgba(202, 138, 4, 0.08);
+    --shadow-glow-primary: 0 0 30px rgba(13, 148, 136, 0.08);
+}
+
+[data-theme="light"] .glow-bg { opacity: 0.12 !important; }
+[data-theme="light"] .glow-1 { background: radial-gradient(circle, #0d9488 0%, transparent 70%) !important; }
+[data-theme="light"] .glow-2 { background: radial-gradient(circle, rgba(202, 138, 4, 0.2) 0%, transparent 70%) !important; }
+[data-theme="light"] .glow-3 { background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%) !important; }
+[data-theme="light"] .logo-text h1 {
+    background: linear-gradient(135deg, #0f172a 50%, #ca8a04);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+[data-theme="light"] .app-header {
+    background: rgba(255, 255, 255, 0.80);
+    border-bottom-color: rgba(148, 163, 184, 0.2);
+}
+[data-theme="light"] .section-header h2 {
+    background: linear-gradient(135deg, #0f172a 60%, #ca8a04);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+[data-theme="light"] .drop-zone { background: rgba(0, 0, 0, 0.03); }
+[data-theme="light"] .room-floorplan {
+    background-image:
+        linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+    background-color: rgba(255, 255, 255, 0.5);
+}
+[data-theme="light"] .purusha-overlay svg line { stroke: rgba(161, 98, 7, 0.2) !important; }
+[data-theme="light"] .sugg-advice-box { background: rgba(0, 0, 0, 0.02); }
+[data-theme="light"] .web-compass-widget { border-top-color: rgba(0, 0, 0, 0.08); }
+[data-theme="light"] .app-footer { border-top-color: rgba(148, 163, 184, 0.2); }
+[data-theme="light"] .landing-header {
+    background: rgba(255, 255, 255, 0.7);
+    border-bottom-color: rgba(148, 163, 184, 0.2);
+}
+[data-theme="light"] .modal-content { box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15); }
+[data-theme="light"] .modal-overlay { background: rgba(241, 245, 249, 0.88); }
+[data-theme="light"] .system-hud-card {
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+}
+[data-theme="light"] .hud-visual-display { background: rgba(241, 245, 249, 0.6); }
+[data-theme="light"] .hud-score-ring::after { background: #ffffff; }
+[data-theme="light"] .hud-score-val { color: #0f172a; }
+[data-theme="light"] .vastu-mandala-grid { background: rgba(255, 255, 255, 0.5); }
+[data-theme="light"] .furniture-icon-badge {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+[data-theme="light"] .furniture-lbl { background: rgba(241, 245, 249, 0.9); }
+[data-theme="light"] .cardinal-lbl {
+    background: #ffffff;
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* ── Manual Dark Mode Override (via data-theme) ──────────────────────────── */
+[data-theme="dark"] {
+    --color-scheme: dark;
+    
+    --bg-dark: #070c12;
+    --bg-elevated: #0d141f;
+    --surface-glass: rgba(13, 24, 38, 0.62);
+    --surface-glass-hover: rgba(19, 35, 56, 0.78);
+    --surface-glass-strong: rgba(16, 29, 46, 0.88);
+    --border-glass: rgba(20, 184, 166, 0.09);
+    --border-glass-hover: rgba(250, 204, 21, 0.18);
+    --border-active: rgba(250, 204, 21, 0.5);
+    --primary: #14b8a6;
+    --primary-hover: #2dd4bf;
+    --primary-glow: rgba(20, 184, 166, 0.28);
+    --primary-surface: rgba(20, 184, 166, 0.07);
+    --gold: #cca325;
+    --gold-bright: #facc15;
+    --gold-glow: rgba(250, 204, 21, 0.22);
+    --gold-surface: rgba(250, 204, 21, 0.05);
+    --text-primary: #f3f5f9;
+    --text-secondary: #c5cbdc;
+    --text-muted: #7d879e;
+    --status-good: #10b981;
+    --status-good-bg: rgba(16, 185, 129, 0.10);
+    --status-good-text: #a7f3d0;
+    --status-warning: #f59e0b;
+    --status-warning-bg: rgba(245, 158, 11, 0.10);
+    --status-warning-text: #fde68a;
+    --status-critical: #ef4444;
+    --status-critical-bg: rgba(239, 68, 68, 0.10);
+    --status-critical-text: #fca5a5;
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-card-hover: 0 8px 40px rgba(0, 0, 0, 0.42), 0 2px 4px rgba(0, 0, 0, 0.25);
+    --shadow-glow-gold: 0 0 30px rgba(250, 204, 21, 0.14);
+    --shadow-glow-primary: 0 0 30px rgba(20, 184, 166, 0.16);
+}
     :root {
         --color-scheme: light;
 

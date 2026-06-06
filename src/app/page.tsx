@@ -415,9 +415,13 @@ export default function Home() {
   const [compassHeading, setCompassHeading] = useState(0);
   const [compassDir, setCompassDir] = useState("N");
 
-  // --- System Theme Detection ---
+  // --- Theme System (auto-detection + manual override) ---
+  type ThemeMode = "system" | "light" | "dark";
+  const [themeMode, setThemeMode] = useState<ThemeMode>("system");
   const [systemTheme, setSystemTheme] = useState<"dark" | "light">("dark");
-  
+
+  const resolvedTheme = themeMode === "system" ? systemTheme : themeMode;
+
   useEffect(() => {
     const mq = window.matchMedia("(prefers-color-scheme: light)");
     setSystemTheme(mq.matches ? "light" : "dark");
@@ -425,6 +429,23 @@ export default function Home() {
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
+
+  // Sync data-theme on <html>
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", resolvedTheme);
+    return () => document.documentElement.removeAttribute("data-theme");
+  }, [resolvedTheme]);
+
+  const cycleTheme = () => {
+    setThemeMode((prev) => {
+      if (prev === "system") return "light";
+      if (prev === "light") return "dark";
+      return "system";
+    });
+  };
+
+  const themeIcon = themeMode === "light" ? "☀️" : themeMode === "dark" ? "🌙" : "🌓";
+  const themeLabel = themeMode === "light" ? "Light" : themeMode === "dark" ? "Dark" : "Auto";
 
   // --- Cursor Follower State ---
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
@@ -887,7 +908,7 @@ export default function Home() {
     return (
       <>
         {/* Interactive Particle Background */}
-        <ParticleBackground systemTheme={systemTheme} />
+        <ParticleBackground systemTheme={resolvedTheme} />
 
         {/* Background decorations */}
         <div className="glow-bg glow-1"></div>
@@ -917,7 +938,15 @@ export default function Home() {
                   </h1>
                 </div>
               </div>
-              <div className="header-actions" style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <div className="header-actions" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                {/* Theme Toggle */}
+                <button
+                  onClick={cycleTheme}
+                  title={`Theme: ${themeLabel}`}
+                  className="theme-toggle-btn"
+                >
+                  <span className="theme-toggle-icon">{themeIcon}</span>
+                </button>
                 <div style={{ display: "flex", background: "rgba(15, 23, 42, 0.6)", padding: "2px", borderRadius: "8px", border: "1px solid rgba(51, 65, 85, 0.5)" }}>
                   <button
                     onClick={() => setActiveLanguage("english")}
@@ -1027,7 +1056,7 @@ export default function Home() {
   return (
     <>
       {/* Interactive Particle Background */}
-      <ParticleBackground systemTheme={systemTheme} />
+      <ParticleBackground systemTheme={resolvedTheme} />
 
       {/* Cursor Follower */}
       <div
@@ -1069,6 +1098,14 @@ export default function Home() {
             </div>
           </div>
           <div className="status-indicator-bar" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            {/* Theme Toggle */}
+            <button
+              onClick={cycleTheme}
+              title={`Theme: ${themeLabel}`}
+              className="theme-toggle-btn"
+            >
+              <span className="theme-toggle-icon">{themeIcon}</span>
+            </button>
             <div style={{ display: "flex", background: "rgba(15, 23, 42, 0.6)", padding: "2px", borderRadius: "8px", border: "1px solid rgba(51, 65, 85, 0.5)" }}>
               <button
                 onClick={() => setActiveLanguage("english")}
