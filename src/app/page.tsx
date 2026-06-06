@@ -285,102 +285,6 @@ const TRANSLATIONS = {
 };
 
 
-// ── Interactive Particle Background ──────────────────────────────────────
-function ParticleBackground({ systemTheme }: { systemTheme: "dark" | "light" }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    let mouse = { x: -1000, y: -1000 };
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    const onMouse = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    };
-    window.addEventListener("mousemove", onMouse);
-
-    const particleCount = Math.min(60, Math.floor((window.innerWidth * window.innerHeight) / 20000));
-    const particles: {
-      x: number; y: number; vx: number; vy: number;
-      size: number; opacity: number; hue: number;
-    }[] = [];
-
-    for (let i = 0; i < particleCount; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        size: Math.random() * 2 + 0.5,
-        opacity: Math.random() * 0.4 + 0.1,
-        hue: Math.random() > 0.5 ? 172 : 45, // teal or gold
-      });
-    }
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-        const dx = mouse.x - p.x;
-        const dy = mouse.y - p.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 120) {
-          ctx.beginPath();
-          ctx.moveTo(p.x, p.y);
-          ctx.lineTo(mouse.x, mouse.y);
-          ctx.strokeStyle = `hsla(${p.hue}, 70%, 60%, ${(1 - dist / 120) * 0.12})`;
-          ctx.lineWidth = 0.5;
-          ctx.stroke();
-        }
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, 70%, 60%, ${p.opacity})`;
-        ctx.fill();
-      }
-
-      animId = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("mousemove", onMouse);
-    };
-  }, [systemTheme]);
-
-  return (
-    <canvas
-      ref={canvasRef}
-      className="particle-canvas"
-      aria-hidden="true"
-    />
-  );
-}
-
-
 export default function Home() {
   // --- Core State ---
   const [activeLanguage, setActiveLanguage] = useState<"english" | "nepali">("english");
@@ -406,74 +310,25 @@ export default function Home() {
   const [activeFilterTab, setActiveFilterTab] = useState<"all" | "critical" | "warning" | "good">("all");
   const [gridMode, setGridMode] = useState<"blueprint" | "purusha">("blueprint");
   
-  // --- FAQ Accordion State ---
-  const [faqOpenIdxs, setFaqOpenIdxs] = useState<number[]>([]);
-  
-  const toggleFaq = (idx: number) => {
-    setFaqOpenIdxs((prev) =>
-      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
-    );
-  };
-  
   const [refinementText, setRefinementText] = useState("");
   const [refinementLoading, setRefinementLoading] = useState(false);
   const [selectedSector, setSelectedSector] = useState<string | null>(null);
+  const [faqOpenIdxs, setFaqOpenIdxs] = useState<number[]>([]);
+
+  const toggleFaq = (idx: number) => {
+    setFaqOpenIdxs((prev) => prev.includes(idx) ? prev.filter(i => i !== idx) : [...prev, idx]);
+  };
 
   // --- Active Web Compass State ---
   const [compassEnabled, setCompassEnabled] = useState(false);
   const [compassHeading, setCompassHeading] = useState(0);
   const [compassDir, setCompassDir] = useState("N");
 
-  // --- Theme System (auto-detection + manual override) ---
-  type ThemeMode = "system" | "light" | "dark";
-  const [themeMode, setThemeMode] = useState<ThemeMode>("system");
-  const [systemTheme, setSystemTheme] = useState<"dark" | "light">("dark");
-
-  const resolvedTheme = themeMode === "system" ? systemTheme : themeMode;
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: light)");
-    setSystemTheme(mq.matches ? "light" : "dark");
-    const handler = (e: MediaQueryListEvent) => setSystemTheme(e.matches ? "light" : "dark");
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
-
-  // Sync data-theme on <html>
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", resolvedTheme);
-    return () => document.documentElement.removeAttribute("data-theme");
-  }, [resolvedTheme]);
-
-  const cycleTheme = () => {
-    setThemeMode((prev) => {
-      if (prev === "system") return "light";
-      if (prev === "light") return "dark";
-      return "system";
-    });
-  };
-
-  const themeIcon = themeMode === "light" ? "☀️" : themeMode === "dark" ? "🌙" : "🌓";
-  const themeLabel = themeMode === "light" ? "Light" : themeMode === "dark" ? "Dark" : "Auto";
-
   // --- Touch Device Detection ---
   const [isTouchDevice] = useState(() => {
     if (typeof window === "undefined") return false;
     return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   });
-
-  // --- Cursor Follower State (desktop only) ---
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-  const [cursorHovering, setCursorHovering] = useState(false);
-
-  useEffect(() => {
-    if (isTouchDevice) return;
-    const move = (e: MouseEvent) => {
-      setCursorPos({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener("mousemove", move);
-    return () => window.removeEventListener("mousemove", move);
-  }, [isTouchDevice]);
 
   // --- 3D Tilt Refs ---
   const tiltRefs = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -923,9 +778,6 @@ export default function Home() {
   if (showLanding) {
     return (
       <>
-        {/* Interactive Particle Background (desktop only) */}
-        {!isTouchDevice && <ParticleBackground systemTheme={resolvedTheme} />}
-
         {/* Background decorations */}
         <div className="glow-bg glow-1"></div>
         <div className="glow-bg glow-2"></div>
@@ -955,14 +807,6 @@ export default function Home() {
                 </div>
               </div>
               <div className="header-actions" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                {/* Theme Toggle */}
-                <button
-                  onClick={cycleTheme}
-                  title={`Theme: ${themeLabel}`}
-                  className="theme-toggle-btn"
-                >
-                  <span className="theme-toggle-icon">{themeIcon}</span>
-                </button>
                 <div style={{ display: "flex", background: "rgba(15, 23, 42, 0.6)", padding: "2px", borderRadius: "8px", border: "1px solid rgba(51, 65, 85, 0.5)" }}>
                   <button
                     onClick={() => setActiveLanguage("english")}
@@ -1025,23 +869,7 @@ export default function Home() {
     );
   }
 
-  return (
-    <>
-      {/* Interactive Particle Background (desktop only) */}
-      {!isTouchDevice && <ParticleBackground systemTheme={resolvedTheme} />}
-
-      {/* Cursor Follower (desktop only) */}
-      {!isTouchDevice && (
-        <div
-          className={`cursor-follower ${cursorHovering ? "hovering" : ""}`}
-          style={{
-            left: `${cursorPos.x}px`,
-            top: `${cursorPos.y}px`,
-          }}
-          aria-hidden="true"
-        />
-      )}
-
+  return (      <>
       {/* Background decorations */}
       <div className="glow-bg glow-1"></div>
       <div className="glow-bg glow-2"></div>
@@ -1072,14 +900,6 @@ export default function Home() {
             </div>
           </div>
           <div className="status-indicator-bar" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            {/* Theme Toggle */}
-            <button
-              onClick={cycleTheme}
-              title={`Theme: ${themeLabel}`}
-              className="theme-toggle-btn"
-            >
-              <span className="theme-toggle-icon">{themeIcon}</span>
-            </button>
             <div style={{ display: "flex", background: "rgba(15, 23, 42, 0.6)", padding: "2px", borderRadius: "8px", border: "1px solid rgba(51, 65, 85, 0.5)" }}>
               <button
                 onClick={() => setActiveLanguage("english")}
@@ -1166,8 +986,8 @@ export default function Home() {
                       key={room}
                       ref={(el) => setTiltRef(`room-${room}`, el)}
                       onMouseMove={(e) => handleTilt(`room-${room}`, e)}
-                      onMouseEnter={() => setCursorHovering(true)}
-                      onMouseLeave={() => { resetTilt(`room-${room}`); setCursorHovering(false); }}
+                      onMouseEnter={() => {}}
+                      onMouseLeave={() => { resetTilt(`room-${room}`); }}
                       onClick={() => setSelectedRoom(room)}
                       className={`tilt-card room-card ${selectedRoom === room ? "selected" : ""}`}
                     >
