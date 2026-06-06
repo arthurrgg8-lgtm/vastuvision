@@ -30,7 +30,7 @@ def test_nextjs_proxy():
     }
     
     # 4. POST request to Next.js server (port 3000)
-    url = "http://localhost:3000/api/analyze"
+    url = "https://vastuvision-beta.vercel.app/api/analyze"
     data = json.dumps(payload).encode('utf-8')
     
     req = urllib.request.Request(
@@ -41,7 +41,7 @@ def test_nextjs_proxy():
     )
     
     try:
-        print("Sending request to Next.js server (http://localhost:3000/api/analyze)...")
+        print("Sending request to Next.js server (https://vastuvision-beta.vercel.app/api/analyze)...")
         with urllib.request.urlopen(req, timeout=60) as response:
             resp_data = response.read().decode('utf-8')
             resp_json = json.loads(resp_data)

@@ -247,7 +247,7 @@ class CaptureActivity : AppCompatActivity(), CompassHelper.CompassListener {
         val outputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 75, outputStream)
         val bytes = outputStream.toByteArray()
-        return Base64.encodeToString(bytes, Base64.DEFAULT)
+        return Base64.encodeToString(bytes, Base64.NO_WRAP)
     }
 
     /* ==========================================================================

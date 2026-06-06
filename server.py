@@ -518,6 +518,7 @@ Expected JSON Schema:
         for direction in ['north', 'south', 'east', 'west']:
             img_b64 = images.get(direction)
             if img_b64:
+                img_b64 = str(img_b64).replace("\n", "").replace("\r", "").replace(" ", "")
                 # Strip data:image/... prefix if client sent it
                 if "," in img_b64:
                     img_b64 = img_b64.split(",")[1]
