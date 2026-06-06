@@ -1176,26 +1176,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* FAQ & Vastu Shastra Guide — Always visible on main page */}
-          <section className="faq-section text-center">
-            <div className="faq-title-area">
-              <h2>{t("faqTitle")}</h2>
-              <p>{t("faqSub")}</p>
-            </div>
-            <div className="faq-grid">
-              {((TRANSLATIONS[activeLanguage] as any).faqList || TRANSLATIONS.english.faqList).map((faq: any, idx: number) => (
-                <div
-                  key={idx}
-                  ref={setRevealRef(`faq-${idx}`)}
-                  className={`faq-card reveal ${idx % 2 === 0 ? "reveal-delay-1" : "reveal-delay-2"}`}
-                >
-                  <h3>{faq.q}</h3>
-                  <p>{faq.a}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
           {/* STEP 1: ROOM SELECTION */}
           {currentStep === 1 && (
             <section className="step-section active">
@@ -1695,6 +1675,26 @@ export default function Home() {
 
         </div>
       </main>
+
+          {/* FAQ Section — Knowledge Base at bottom */}
+          <section className="faq-section text-center">
+            <div className="faq-title-area">
+              <h2>{t("faqTitle")}</h2>
+              <p>{t("faqSub")}</p>
+            </div>
+            <div className="faq-grid">
+              {((TRANSLATIONS[activeLanguage] as any).faqList || TRANSLATIONS.english.faqList).map((faq: any, idx: number) => (
+                <div
+                  key={idx}
+                  ref={setRevealRef(`faq-${idx}`)}
+                  className={`faq-card reveal ${idx % 2 === 0 ? "reveal-delay-1" : "reveal-delay-2"}`}
+                >
+                  <h3>{faq.q}</h3>
+                  <p>{faq.a}</p>
+                </div>
+              ))}
+            </div>
+          </section>
 
       {/* Footer */}
       <footer className="app-footer text-center">
