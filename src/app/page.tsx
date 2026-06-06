@@ -285,6 +285,102 @@ const TRANSLATIONS = {
 };
 
 
+// ── Interactive Particle Background ──────────────────────────────────────
+function ParticleBackground({ systemTheme }: { systemTheme: "dark" | "light" }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let mouse = { x: -1000, y: -1000 };
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const onMouse = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+    window.addEventListener("mousemove", onMouse);
+
+    const particleCount = Math.min(60, Math.floor((window.innerWidth * window.innerHeight) / 20000));
+    const particles: {
+      x: number; y: number; vx: number; vy: number;
+      size: number; opacity: number; hue: number;
+    }[] = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        size: Math.random() * 2 + 0.5,
+        opacity: Math.random() * 0.4 + 0.1,
+        hue: Math.random() > 0.5 ? 172 : 45, // teal or gold
+      });
+    }
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `hsla(${p.hue}, 70%, 60%, ${(1 - dist / 120) * 0.12})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${p.hue}, 70%, 60%, ${p.opacity})`;
+        ctx.fill();
+      }
+
+      animId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("mousemove", onMouse);
+    };
+  }, [systemTheme]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="particle-canvas"
+      aria-hidden="true"
+    />
+  );
+}
+
+
 export default function Home() {
   // --- Core State ---
   const [activeLanguage, setActiveLanguage] = useState<"english" | "nepali">("english");
@@ -318,6 +414,100 @@ export default function Home() {
   const [compassEnabled, setCompassEnabled] = useState(false);
   const [compassHeading, setCompassHeading] = useState(0);
   const [compassDir, setCompassDir] = useState("N");
+
+  // --- System Theme Detection ---
+  const [systemTheme, setSystemTheme] = useState<"dark" | "light">("dark");
+  
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: light)");
+    setSystemTheme(mq.matches ? "light" : "dark");
+    const handler = (e: MediaQueryListEvent) => setSystemTheme(e.matches ? "light" : "dark");
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  // --- Cursor Follower State ---
+  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
+  const [cursorHovering, setCursorHovering] = useState(false);
+
+  useEffect(() => {
+    const move = (e: MouseEvent) => {
+      setCursorPos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", move);
+    return () => window.removeEventListener("mousemove", move);
+  }, []);
+
+  // --- 3D Tilt Refs ---
+  const tiltRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
+  const handleTilt = (id: string, e: React.MouseEvent<HTMLDivElement>) => {
+    const el = tiltRefs.current.get(id);
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -8;
+    const rotateY = ((x - centerX) / centerX) * 8;
+    el.style.setProperty("--shine-x", `${(x / rect.width) * 100}%`);
+    el.style.setProperty("--shine-y", `${(y / rect.height) * 100}%`);
+    el.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  };
+
+  const resetTilt = (id: string) => {
+    const el = tiltRefs.current.get(id);
+    if (!el) return;
+    el.style.transform = "perspective(800px) rotateX(0deg) rotateY(0deg)";
+  };
+
+  const setTiltRef = (id: string, el: HTMLDivElement | null) => {
+    if (el) tiltRefs.current.set(id, el);
+    else tiltRefs.current.delete(id);
+  };
+
+  // --- Scroll Reveal ---
+  const revealRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("revealed");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    revealRefs.current.forEach((el) => {
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [currentStep]);
+
+  const setRevealRef = (id: string) => (el: HTMLDivElement | null) => {
+    if (el) revealRefs.current.set(id, el);
+    else revealRefs.current.delete(id);
+  };
+
+  // --- Ripple Effect ---
+  const createRipple = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const btn = e.currentTarget;
+    const circle = document.createElement("span");
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    circle.style.width = circle.style.height = `${size}px`;
+    circle.style.left = `${e.clientX - rect.left - size / 2}px`;
+    circle.style.top = `${e.clientY - rect.top - size / 2}px`;
+    circle.classList.add("ripple-effect");
+    const existing = btn.querySelector(".ripple-effect");
+    if (existing) existing.remove();
+    btn.appendChild(circle);
+  };
 
   // Refs for files
   const fileRefs = {
@@ -696,6 +886,9 @@ export default function Home() {
   if (showLanding) {
     return (
       <>
+        {/* Interactive Particle Background */}
+        <ParticleBackground systemTheme={systemTheme} />
+
         {/* Background decorations */}
         <div className="glow-bg glow-1"></div>
         <div className="glow-bg glow-2"></div>
@@ -833,6 +1026,19 @@ export default function Home() {
 
   return (
     <>
+      {/* Interactive Particle Background */}
+      <ParticleBackground systemTheme={systemTheme} />
+
+      {/* Cursor Follower */}
+      <div
+        className={`cursor-follower ${cursorHovering ? "hovering" : ""}`}
+        style={{
+          left: `${cursorPos.x}px`,
+          top: `${cursorPos.y}px`,
+        }}
+        aria-hidden="true"
+      />
+
       {/* Background decorations */}
       <div className="glow-bg glow-1"></div>
       <div className="glow-bg glow-2"></div>
@@ -947,12 +1153,19 @@ export default function Home() {
                   return (
                     <div
                       key={room}
+                      ref={(el) => setTiltRef(`room-${room}`, el)}
+                      onMouseMove={(e) => handleTilt(`room-${room}`, e)}
+                      onMouseEnter={() => setCursorHovering(true)}
+                      onMouseLeave={() => { resetTilt(`room-${room}`); setCursorHovering(false); }}
                       onClick={() => setSelectedRoom(room)}
-                      className={`room-card ${selectedRoom === room ? "selected" : ""}`}
+                      className={`tilt-card room-card ${selectedRoom === room ? "selected" : ""}`}
                     >
+                      <div className="tilt-shine" aria-hidden="true" />
+                      <div className="tilt-inner">
                       <div className="room-icon">{details.icon}</div>
                       <h3>{details.title}</h3>
                       <p>{details.desc}</p>
+                      </div>
                     </div>
                   );
                 })}
@@ -960,9 +1173,9 @@ export default function Home() {
 
               <div className="action-footer text-center">
                 <button
-                  className="btn btn-primary"
+                  className="btn btn-primary ripple-btn"
                   disabled={!selectedRoom}
-                  onClick={() => setCurrentStep(2)}
+                  onClick={(e) => { createRipple(e); setCurrentStep(2); }}
                 >
                   <span>{t("configureUploads")}</span>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1081,16 +1294,16 @@ export default function Home() {
               </div>
 
               <div className="action-footer">
-                <button className="btn btn-secondary" onClick={() => setCurrentStep(1)}>
+                <button className="btn btn-secondary ripple-btn" onClick={(e) => { createRipple(e); setCurrentStep(1); }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polyline points="15 18 9 12 15 6" />
                   </svg>
                   <span>{t("changeRoom")}</span>
                 </button>
                 <button
-                  className="btn btn-primary btn-glow"
+                  className="btn btn-primary btn-glow ripple-btn"
                   disabled={!allUploaded}
-                  onClick={startAnalysis}
+                  onClick={(e) => { createRipple(e); startAnalysis(); }}
                 >
                   <span>{t("analyzeRoom")}</span>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -1130,7 +1343,7 @@ export default function Home() {
                     {selectedRoom ? t(selectedRoom) : ""} {activeLanguage === "english" ? "Analysis — Harmony Assessment" : "विश्लेषण — सद्भाव मूल्याङ्कन"}
                   </p>
                 </div>
-                <button className="btn btn-secondary" onClick={resetAnalysis}>
+                <button className="btn btn-secondary ripple-btn" onClick={(e) => { createRipple(e); resetAnalysis(); }}>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
                   </svg>
@@ -1388,8 +1601,8 @@ export default function Home() {
                     disabled={refinementLoading}
                   ></textarea>
                   <button
-                    className="btn btn-primary btn-glow"
-                    onClick={submitRefinement}
+                    className="btn btn-primary btn-glow ripple-btn"
+                    onClick={(e) => { createRipple(e); submitRefinement(); }}
                     disabled={refinementLoading || !refinementText.trim()}
                   >
                     {refinementLoading ? (
@@ -1422,7 +1635,11 @@ export default function Home() {
             </div>
             <div className="faq-grid">
               {((TRANSLATIONS[activeLanguage] as any).faqList || TRANSLATIONS.english.faqList).map((faq: any, idx: number) => (
-                <div key={idx} className="faq-card">
+                <div
+                  key={idx}
+                  ref={setRevealRef(`faq-${idx}`)}
+                  className={`faq-card reveal ${idx % 2 === 0 ? "reveal-delay-1" : "reveal-delay-2"}`}
+                >
                   <h3>{faq.q}</h3>
                   <p>{faq.a}</p>
                 </div>
