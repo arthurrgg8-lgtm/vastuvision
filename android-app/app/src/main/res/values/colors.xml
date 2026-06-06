@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base backgrounds -->
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="bg_dark">#060810</color>
+    <color name="bg_elevated">#0c0f1a</color>
+    <color name="surface_card">#0e1123</color>
+    <color name="surface_input">#0a0c18</color>
+    <color name="surface_raised">#131523</color>
+
+    <!-- Primary brand -->
+    <color name="primary">#6366F1</color>
+    <color name="primary_dark">#4F46E5</color>
+    <color name="primary_light">#818CF8</color>
+    <color name="indigo_primary">@color/primary</color>
+
+    <!-- Gold accents -->
+    <color name="gold">#D4AF37</color>
+    <color name="gold_bright">#FFD700</color>
+    <color name="gold_accent">@color/gold</color>
+
+    <!-- Text hierarchy -->
+    <color name="text_primary">#F1F3F8</color>
+    <color name="text_secondary">#C3C8D8</color>
+    <color name="text_muted">#7B829A</color>
+    <color name="grey_muted">@color/text_muted</color>
+
+    <!-- Status semantic -->
+    <color name="status_good">#22C55E</color>
+    <color name="status_warning">#F59E0B</color>
+    <color name="status_critical">#EF4444</color>
+
+    <!-- Glass borders -->
+    <color name="border_glass">#12FFFFFF</color>
+    <color name="border_glass_bright">#1AFFFFFF</color>
+    <color name="border_subtle">#0DFFFFFF</color>
+
+    <!-- Overlay / scrim -->
+    <color name="scrim_heavy">#E6060810</color>
+    <color name="scrim_medium">#D9070810</color>
+</resources>

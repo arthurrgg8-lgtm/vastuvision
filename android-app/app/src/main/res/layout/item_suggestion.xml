@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="8dp"
+    android:layout_marginHorizontal="2dp"
+    app:cardCornerRadius="16dp"
+    app:cardBackgroundColor="@color/surface_card"
+    app:cardElevation="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Top Row: Name and Status Badge -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvObjName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bed"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.01"/>
+
+            <TextView
+                android:id="@+id/tvStatusBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Critical"
+                android:textColor="@color/white"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:background="@drawable/bg_status_badge"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:letterSpacing="0.05"/>
+        </RelativeLayout>
+
+        <!-- Position detail row -->
+        <TextView
+            android:id="@+id/tvObjPosition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Detected: North | Ideal: South or East"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:layout_marginTop="6dp"
+            android:textStyle="italic"/>
+
+        <!-- Reason -->
+        <TextView
+            android:id="@+id/tvReason"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sleeping with head to North aligns body against Earth magnetic field."
+            android:textColor="@color/text_muted"
+            android:textSize="13sp"
+            android:layout_marginTop="10dp"
+            android:lineSpacingExtra="3dp"/>
+
+        <!-- Remedy box -->
+        <LinearLayout
+            android:id="@+id/layoutRemedy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="14dp"
+            android:padding="12dp"
+            android:background="@drawable/bg_input_dark">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vastu Remedy"
+                android:textColor="@color/gold"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05"
+                android:textAllCaps="true"/>
+
+            <TextView
+                android:id="@+id/tvRemedyText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rotate the bed so the head faces South or East."
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:layout_marginTop="4dp"
+                android:lineSpacingExtra="3dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

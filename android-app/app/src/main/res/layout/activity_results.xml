@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark"
+    android:padding="16dp">
+
+    <!-- Header -->
+    <TextView
+        android:id="@+id/tvResultsHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vastu Harmony Report"
+        android:textColor="@color/text_primary"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <Button
+        android:id="@+id/btnBackToMain"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="Close"
+        android:textColor="@color/text_primary"
+        android:backgroundTint="@color/surface_card"
+        app:cornerRadius="8dp"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="4dp"/>
+
+    <!-- Score Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardScore"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        app:cardCornerRadius="60dp"
+        app:cardBackgroundColor="@color/surface_card"
+        app:layout_constraintTop_toBottomOf="@id/tvResultsHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="20dp"
+        app:cardElevation="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/tvScoreVal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="85"
+                android:textColor="@color/gold_bright"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="HARMONY"
+                android:textColor="@color/text_muted"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05"
+                android:layout_below="@id/tvScoreVal"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="2dp"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- 2D Floorplan Visualizer -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardMap"
+        android:layout_width="0dp"
+        android:layout_height="120dp"
+        app:cardCornerRadius="14dp"
+        app:cardBackgroundColor="@color/surface_card"
+        app:layout_constraintTop_toBottomOf="@id/tvResultsHeader"
+        app:layout_constraintStart_toEndOf="@id/cardScore"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        app:cardElevation="0dp">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnCount="3"
+            android:rowCount="3"
+            android:padding="10dp">
+
+            <!-- Grid Layout representing North, Center, South, East, West cells -->
+            <!-- Row 1 -->
+            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_rowWeight="1" android:layout_columnWeight="1" />
+            <TextView
+                android:id="@+id/gridCellNorth"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:text="N: -"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp"
+                android:gravity="center"
+                android:background="@drawable/bg_input_dark"
+                android:layout_margin="3dp"/>
+            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_rowWeight="1" android:layout_columnWeight="1" />
+
+            <!-- Row 2 -->
+            <TextView
+                android:id="@+id/gridCellWest"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:text="W: -"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp"
+                android:gravity="center"
+                android:background="@drawable/bg_input_dark"
+                android:layout_margin="3dp"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:text="Center"
+                android:textColor="@color/primary"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_margin="3dp"/>
+            <TextView
+                android:id="@+id/gridCellEast"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:text="E: -"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp"
+                android:gravity="center"
+                android:background="@drawable/bg_input_dark"
+                android:layout_margin="3dp"/>
+
+            <!-- Row 3 -->
+            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_rowWeight="1" android:layout_columnWeight="1" />
+            <TextView
+                android:id="@+id/gridCellSouth"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:text="S: -"
+                android:textColor="@color/text_secondary"
+                android:textSize="10sp"
+                android:gravity="center"
+                android:background="@drawable/bg_input_dark"
+                android:layout_margin="3dp"/>
+            <View android:layout_width="0dp" android:layout_height="0dp" android:layout_rowWeight="1" android:layout_columnWeight="1" />
+
+        </GridLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Suggestions List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSuggestions"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/cardScore"
+        app:layout_constraintBottom_toTopOf="@id/layoutRefineRow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@android:layout/simple_list_item_2" />
+
+    <!-- Refine Row -->
+    <LinearLayout
+        android:id="@+id/layoutRefineRow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingVertical="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <EditText
+            android:id="@+id/etRefineInput"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_input_dark"
+            android:hint="Type corrections: 'Remove bed'..."
+            android:textColorHint="@color/text_muted"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:paddingHorizontal="16dp"
+            android:inputType="textLongMessage"/>
+
+        <Button
+            android:id="@+id/btnSubmitRefine"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="Refine"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:backgroundTint="@color/primary"
+            app:cornerRadius="10dp"
+            android:layout_marginStart="12dp" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

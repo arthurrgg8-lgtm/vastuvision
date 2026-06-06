@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#060810">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>VastuVision AI - Smart Vastu Shastra Room Analysis</title>
+    <meta name="description" content="Evaluate your home layout and furniture placement using advanced Vision AI cross-referenced against traditional Vastu Shastra principles.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background visual decorations -->
+    <div class="glow-bg glow-1"></div>
+    <div class="glow-bg glow-2"></div>
+    <div class="glow-bg glow-3"></div>
+
+    <header class="app-header">
+        <div class="container header-container">
+            <div class="logo-area">
+                <svg class="logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="url(#gold-grad)" stroke-width="2.5" />
+                    <rect x="25" y="25" width="50" height="50" fill="none" stroke="url(#gold-grad)" stroke-width="1.5" transform="rotate(45 50 50)"/>
+                    <circle cx="50" cy="50" r="12" fill="url(#gold-grad)" opacity="0.8"/>
+                    <line x1="50" y1="5" x2="50" y2="95" stroke="url(#gold-grad)" stroke-width="1" stroke-dasharray="2 2" />
+                    <line x1="5" y1="50" x2="95" y2="50" stroke="url(#gold-grad)" stroke-width="1" stroke-dasharray="2 2" />
+                    <defs>
+                        <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ffd700" />
+                            <stop offset="100%" stop-color="#b8860b" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="logo-text">
+                    <h1>VastuVision <span>AI</span></h1>
+                    <p class="tagline">Smart Room Analysis & Harmony Guide</p>
+                </div>
+            </div>
+            <div class="status-indicator-bar">
+                <a href="/vastuvision.apk" download class="btn btn-download btn-xs">
+                    <span>📥 Download Android App</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <!-- Stepper Progress Tracker -->
+            <div class="stepper">
+                <div class="step active" id="step-1-indicator">
+                    <div class="step-num">1</div>
+                    <div class="step-label">Select Room</div>
+                </div>
+                <div class="step-line" id="line-1"></div>
+                <div class="step" id="step-2-indicator">
+                    <div class="step-num">2</div>
+                    <div class="step-label">Upload Photos</div>
+                </div>
+                <div class="step-line" id="line-2"></div>
+                <div class="step" id="step-3-indicator">
+                    <div class="step-num">3</div>
+                    <div class="step-label">Harmony Report</div>
+                </div>
+            </div>
+
+            <!-- STEP 1: ROOM SELECTION -->
+            <section id="step-1-container" class="step-section active">
+                <div class="section-header text-center">
+                    <h2>Select Room Type</h2>
+                    <p class="subtitle">Vastu Shastra rules vary significantly depending on the room's function. Select the room you wish to analyze.</p>
+                </div>
+
+                <div class="room-selector-grid">
+                    <div class="room-card" data-room="bedroom" id="room-bedroom">
+                        <div class="room-icon">🛏️</div>
+                        <h3>Bedroom</h3>
+                        <p>Focuses on sleeping direction, relationship harmony, and heavy wardrobe placement.</p>
+                    </div>
+                    <div class="room-card" data-room="kitchen" id="room-kitchen">
+                        <div class="room-icon">🍳</div>
+                        <h3>Kitchen</h3>
+                        <p>Evaluates the Fire element (stove), Water element (sink), and gas cylinder locations.</p>
+                    </div>
+                    <div class="room-card" data-room="living_room" id="room-living_room">
+                        <div class="room-icon">🛋️</div>
+                        <h3>Living Room</h3>
+                        <p>Assesses social dynamics, main guest seating, electronics, and positive energy entry.</p>
+                    </div>
+                    <div class="room-card" data-room="pooja_room" id="room-pooja_room">
+                        <div class="room-icon">🙏</div>
+                        <h3>Pooja Room</h3>
+                        <p>Ensures maximum spiritual purity in the sacred Ishaan (North-East) corner.</p>
+                    </div>
+                    <div class="room-card" data-room="bathroom" id="room-bathroom">
+                        <div class="room-icon">🚿</div>
+                        <h3>Bathroom</h3>
+                        <p>Checks placement of drains, toilet seats, and waste vents to counter negative energy.</p>
+                    </div>
+                </div>
+
+                <div class="action-footer text-center">
+                    <button class="btn btn-primary" id="btn-room-next" disabled>
+                        <span>Configure Uploads</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                </div>
+            </section>
+
+             <!-- STEP 2: PHOTO UPLOAD -->
+             <section id="step-2-container" class="step-section">
+                 <div class="section-header text-center">
+                     <h2 id="upload-title">Capture Your Bedroom Walls</h2>
+                     <p class="subtitle">Upload one photograph facing each cardinal direction. Ensure rooms are well-lit and objects/furniture are clearly visible.</p>
+                 </div>
+ 
+                 <!-- Guided Instruction Box -->
+                 <div class="capture-guide-box">
+                     <div class="guide-icon">🧭</div>
+                     <div class="guide-content">
+                         <h4>Compass Guided Capture Guide</h4>
+                         <p>To ensure the AI maps your furniture layout accurately, follow these steps:</p>
+                         <ol>
+                             <li>Stand directly in the <strong>center</strong> of the room.</li>
+                             <li>Use your phone's compass app (or the interactive compass below) to locate each direction.</li>
+                             <li>Turn to face that direction and photograph the <strong>entire wall directly in front of you</strong>.</li>
+                         </ol>
+                         
+                         <!-- Web Compass Widget -->
+                         <div class="web-compass-widget" id="compass-widget">
+                             <button class="btn btn-secondary btn-xs" id="btn-enable-compass">
+                                 <span>Enable Active Compass</span>
+                             </button>
+                             <div class="compass-display" style="display: none;">
+                                 <div class="compass-dial-wrapper">
+                                     <div class="compass-dial" id="compass-dial">
+                                         <span class="compass-marker north">N</span>
+                                         <span class="compass-marker south">S</span>
+                                         <span class="compass-marker east">E</span>
+                                         <span class="compass-marker west">W</span>
+                                         <div class="compass-needle"></div>
+                                     </div>
+                                 </div>
+                                 <div class="compass-reading">
+                                     <span class="heading-deg" id="compass-deg">0°</span>
+                                     <span class="heading-dir" id="compass-dir">N</span>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+ 
+                 <div class="direction-uploader-grid">
+                     <!-- NORTH -->
+                     <div class="upload-card" id="card-north">
+                         <div class="card-direction">North</div>
+                         <div class="card-desc">Stand in center, face NORTH, photo the wall</div>
+                         <div class="drop-zone" id="drop-north">
+                             <input type="file" id="file-north" accept="image/*" class="file-input">
+                             <div class="drop-zone-content">
+                                 <svg class="upload-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                 </svg>
+                                 <p class="drag-text">Drag & drop or click</p>
+                                 <span class="photo-hint">Compass Heading: 0° / 360°</span>
+                             </div>
+                             <div class="preview-container">
+                                 <img src="" alt="North Wall Preview" class="preview-img">
+                                 <button class="btn-remove-photo" title="Remove Photo">&times;</button>
+                             </div>
+                         </div>
+                     </div>
+ 
+                     <!-- SOUTH -->
+                     <div class="upload-card" id="card-south">
+                         <div class="card-direction">South</div>
+                         <div class="card-desc">Stand in center, face SOUTH, photo the wall</div>
+                         <div class="drop-zone" id="drop-south">
+                             <input type="file" id="file-south" accept="image/*" class="file-input">
+                             <div class="drop-zone-content">
+                                 <svg class="upload-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                 </svg>
+                                 <p class="drag-text">Drag & drop or click</p>
+                                 <span class="photo-hint">Compass Heading: 180°</span>
+                             </div>
+                             <div class="preview-container">
+                                 <img src="" alt="South Wall Preview" class="preview-img">
+                                 <button class="btn-remove-photo" title="Remove Photo">&times;</button>
+                             </div>
+                         </div>
+                     </div>
+ 
+                     <!-- EAST -->
+                     <div class="upload-card" id="card-east">
+                         <div class="card-direction">East</div>
+                         <div class="card-desc">Stand in center, face EAST, photo the wall</div>
+                         <div class="drop-zone" id="drop-east">
+                             <input type="file" id="file-east" accept="image/*" class="file-input">
+                             <div class="drop-zone-content">
+                                 <svg class="upload-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                 </svg>
+                                 <p class="drag-text">Drag & drop or click</p>
+                                 <span class="photo-hint">Compass Heading: 90°</span>
+                             </div>
+                             <div class="preview-container">
+                                 <img src="" alt="East Wall Preview" class="preview-img">
+                                 <button class="btn-remove-photo" title="Remove Photo">&times;</button>
+                             </div>
+                         </div>
+                     </div>
+ 
+                     <!-- WEST -->
+                     <div class="upload-card" id="card-west">
+                         <div class="upload-card-header">
+                             <div class="card-direction">West</div>
+                             <div class="card-desc">Stand in center, face WEST, photo the wall</div>
+                         </div>
+                         <div class="drop-zone" id="drop-west">
+                             <input type="file" id="file-west" accept="image/*" class="file-input">
+                             <div class="drop-zone-content">
+                                 <svg class="upload-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                                 </svg>
+                                 <p class="drag-text">Drag & drop or click</p>
+                                 <span class="photo-hint">Compass Heading: 270°</span>
+                             </div>
+                             <div class="preview-container">
+                                 <img src="" alt="West Wall Preview" class="preview-img">
+                                 <button class="btn-remove-photo" title="Remove Photo">&times;</button>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+
+                <div class="action-footer">
+                    <button class="btn btn-secondary" id="btn-upload-back">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                        <span>Change Room</span>
+                    </button>
+                    <button class="btn btn-primary btn-glow" id="btn-upload-analyze" disabled>
+                        <span>Analyze Room Harmony</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- STEP 3: LOADING -->
+            <section id="step-loading-container" class="step-section">
+                <div class="loader-wrapper text-center">
+                    <div class="spiritual-loader">
+                        <div class="loader-circle outer"></div>
+                        <div class="loader-circle middle"></div>
+                        <div class="loader-circle inner"></div>
+                        <div class="sacred-geometry">⚛️</div>
+                    </div>
+                    <h2>Reading the Energy Alignment...</h2>
+                    <p class="loader-status" id="loader-status-msg">Transmitting base64 image data to VastuVision AI...</p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="analysis-progress"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP 4: RESULTS -->
+            <section id="step-results-container" class="step-section">
+                <div class="results-header">
+                    <div class="results-header-info">
+                        <h2>Vastu Alignment Report</h2>
+                        <p class="subtitle" id="results-room-title">Bedroom Analysis — Harmony Assessment</p>
+                    </div>
+                    <button class="btn btn-secondary" id="btn-reanalyze">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                        <span>New Analysis</span>
+                    </button>
+                </div>
+
+                 <!-- KPI Top Row Cards -->
+                 <div class="kpi-grid">
+                     <!-- Vastu Score KPI -->
+                     <div class="kpi-card score-kpi">
+                         <h3>Vastu Harmony Score</h3>
+                         <div class="score-circle-container">
+                             <svg class="score-ring" viewBox="0 0 120 120">
+                                 <circle class="score-ring-bg" cx="60" cy="60" r="50" />
+                                 <circle class="score-ring-fill" id="score-fill" cx="60" cy="60" r="50" stroke-dasharray="314" stroke-dashoffset="314" />
+                             </svg>
+                             <div class="score-text-val" id="score-text">0</div>
+                         </div>
+                         <p class="score-interpretation" id="score-description">Analyzing alignment...</p>
+                     </div>
+ 
+                     <!-- Energy Balance KPI -->
+                     <div class="kpi-card energy-kpi">
+                         <h3>Elemental Energy State</h3>
+                         <div class="energy-icon-box" id="energy-icon">🌍</div>
+                         <div class="energy-details">
+                             <h4 id="energy-element-name">Earth (Prithvi)</h4>
+                             <p id="energy-element-desc">Fosters grounding, stability, and peaceful sleep.</p>
+                         </div>
+                     </div>
+ 
+                     <!-- Layout Compliance KPI -->
+                     <div class="kpi-card breakdown-kpi">
+                         <h3>Layout Compliance</h3>
+                         <div class="stat-progress-row">
+                             <div class="stat-progress-label">Optimal: <span id="lbl-good-count">0</span></div>
+                             <div class="stat-progress-bar"><div class="bar-fill good" id="bar-good-fill" style="width: 0%;"></div></div>
+                         </div>
+                         <div class="stat-progress-row">
+                             <div class="stat-progress-label">Warnings: <span id="lbl-warning-count">0</span></div>
+                             <div class="stat-progress-bar"><div class="bar-fill warning" id="bar-warning-fill" style="width: 0%;"></div></div>
+                         </div>
+                         <div class="stat-progress-row">
+                             <div class="stat-progress-label">Critical: <span id="lbl-critical-count">0</span></div>
+                             <div class="stat-progress-bar"><div class="bar-fill critical" id="bar-critical-fill" style="width: 0%;"></div></div>
+                         </div>
+                     </div>
+                 </div>
+ 
+                 <!-- Main Diagnostic Workspace -->
+                 <div class="results-main-layout">
+                     <!-- Left Column: Interactive Map -->
+                     <div class="results-map-col">
+                         <div class="dash-card map-card">
+                             <h3>Interactive Room Layout Map</h3>
+                             <p class="card-hint">Tap on N, S, E, or W to inspect detailed Vastu properties</p>
+                             <div class="compass-room-box">
+                                 <div class="direction-tag north">N</div>
+                                 <div class="direction-tag south">S</div>
+                                 <div class="direction-tag east">E</div>
+                                 <div class="direction-tag west">W</div>
+                                 
+                                 <div class="room-floorplan">
+                                     <div class="floorplan-cell cell-n" id="cell-north-items"><div class="direction-lbl">North</div></div>
+                                     <div class="floorplan-cell cell-c">Center</div>
+                                     <div class="floorplan-cell cell-s" id="cell-south-items"><div class="direction-lbl">South</div></div>
+                                     <div class="floorplan-cell cell-e" id="cell-east-items"><div class="direction-lbl">East</div></div>
+                                     <div class="floorplan-cell cell-w" id="cell-west-items"><div class="direction-lbl">West</div></div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+ 
+                     <!-- Right Column: Suggestions & Adjustments -->
+                     <div class="results-suggestions-col">
+                         <!-- Suggestions Filter Tabs -->
+                         <div class="filter-tab-bar">
+                             <button class="tab-btn active" data-tab="all" id="tab-all">All Items (<span id="count-all">0</span>)</button>
+                             <button class="tab-btn" data-tab="critical" id="tab-critical">Critical (<span id="count-critical">0</span>)</button>
+                             <button class="tab-btn" data-tab="warning" id="tab-warning">Warnings (<span id="count-warning">0</span>)</button>
+                             <button class="tab-btn" data-tab="good" id="tab-good">Optimal (<span id="count-good">0</span>)</button>
+                         </div>
+ 
+                         <!-- Suggestions Lists -->
+                         <div class="suggestions-list" id="suggestions-list-box">
+                             <!-- Dynamic Suggestion Cards will go here -->
+                         </div>
+                     </div>
+                 </div>
+
+                <!-- Manual Correction & Refinement Chat Section -->
+                <div class="refinement-section">
+                    <div class="refinement-header">
+                        <h4>💡 Refine Vastu Analysis & Add Manual Adjustments</h4>
+                        <p>If the Vision AI misidentified an object or you want to manually configure the layout (e.g. <i>"There is no bed in this room"</i>, <i>"Add a study desk on the North wall"</i>), type your adjustments below.</p>
+                    </div>
+                    <div class="refinement-input-row">
+                        <textarea id="refinement-input" placeholder="Describe layout corrections or missing items... e.g. 'Actually, the stove is on the South-East wall' or 'Remove the mirror'..." rows="2"></textarea>
+                        <button class="btn btn-primary btn-glow" id="btn-submit-refinement">
+                            <span>Submit Correction</span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="app-footer text-center">
+        <p>&copy; 2026 VastuVision AI. Developed by <a href="https://anuditk.vercel.app" target="_blank" style="color: var(--gold-bright); text-decoration: underline;">LazZy</a></p>
+    </footer>
+
+    <!-- Interactive Blueprint Sector Info Tooltip Modal -->
+    <div id="sector-info-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" id="btn-close-modal">&times;</span>
+            <div class="modal-header-gold">
+                <span class="modal-icon">🧭</span>
+                <h3 id="modal-sector-title">North Sector</h3>
+            </div>
+            <div class="modal-body-content">
+                <p class="modal-intro" id="modal-sector-intro">Wealth and Career alignment zone.</p>
+                <div class="modal-guide-details">
+                    <div class="guide-item good">
+                        <strong>Ideal Placements (Positive Energy Flow):</strong>
+                        <span id="modal-sector-ideal">Main Door, Mirrors, Water Fountains, clocks.</span>
+                    </div>
+                    <div class="guide-item bad">
+                        <strong>Avoid Placing (Energy Blockages):</strong>
+                        <span id="modal-sector-avoid">Cooking stove, Toilets, heavy storage.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

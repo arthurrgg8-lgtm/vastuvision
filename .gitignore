@@ -1,0 +1,20 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+venv/
+.venv/
+
+# Android build outputs and caches
+.gradle/
+build/
+app/build/
+local.properties
+.idea/
+*.iml
+.DS_Store
+*.apk
+
+# Make sure the public APK download is tracked and committed
+!public/vastuvision.apk

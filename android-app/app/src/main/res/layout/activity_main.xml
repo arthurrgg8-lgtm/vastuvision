@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dark"
+    android:padding="24dp">
+
+    <!-- Header area -->
+    <LinearLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/tvAppTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="VastuVision AI"
+            android:textColor="@color/text_primary"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.02"/>
+
+        <TextView
+            android:id="@+id/tvAppSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Smart Vastu Shastra Room Analysis"
+            android:textColor="@color/text_muted"
+            android:textSize="14sp"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:fontFamily="sans-serif"/>
+    </LinearLayout>
+
+    <!-- Selection Area wrapped in a Premium Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardSelection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/surface_card"
+        app:layout_constraintTop_toBottomOf="@id/layoutHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tvSelectTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1. Choose Room Type"
+                android:textColor="@color/gold"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.01"/>
+
+            <!-- Spinner with custom rounded background -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_spinner_dark">
+
+                <Spinner
+                    android:id="@+id/spinnerRoomType"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="16dp"
+                    android:background="@android:color/transparent"
+                    android:textColor="@color/text_primary"
+                    android:spinnerMode="dropdown"/>
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/btnStartScan"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="20dp"
+                android:text="Start Guided Scan"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:backgroundTint="@color/primary"
+                app:cornerRadius="12dp"
+                android:letterSpacing="0.02"
+                android:stateListAnimator="@null"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- History Header -->
+    <TextView
+        android:id="@+id/tvHistoryTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="Vastu Scan History"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/cardSelection"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <!-- History RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvHistory"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:paddingBottom="16dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/tvHistoryTitle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@android:layout/simple_list_item_2"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

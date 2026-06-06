@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">VastuVision AI</string>
+    <string name="select_room_title">Select Room to Analyze</string>
+    <string name="history_title">Analysis History</string>
+    <string name="btn_start_analysis">Start Guided Scan</string>
+    <string name="camera_permission_required">Camera permission is required to capture room photos.</string>
+</resources>
