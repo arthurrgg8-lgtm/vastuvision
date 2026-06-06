@@ -9,8 +9,8 @@ import java.net.URL
 
 object NetworkClient {
 
-    // Default ngrok URL pointing to the running backend proxy
-    private const val BASE_URL = "https://leatha-exorbitant-unbravely.ngrok-free.dev"
+    // Production Vercel deployment URL
+    private const val BASE_URL = "https://vastuvision-beta.vercel.app"
     private const val ANALYZE_ENDPOINT = "$BASE_URL/api/analyze"
     private const val TIMEOUT = 45_000
 

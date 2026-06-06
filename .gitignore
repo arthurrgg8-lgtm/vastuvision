@@ -14,8 +14,21 @@ local.properties
 .idea/
 *.iml
 .DS_Store
-*.apk
 
 # Make sure the public APK download is tracked and committed
 !public/vastuvision.apk
 .vercel
+
+# Next.js / Node.js
+node_modules/
+.next/
+out/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+
+# Temporary Next.js creation residue
+next-app/

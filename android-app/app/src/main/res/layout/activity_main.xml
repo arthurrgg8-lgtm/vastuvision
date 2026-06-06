@@ -19,6 +19,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <ImageView
+            android:id="@+id/ivAppLogo"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginBottom="12dp"
+            android:src="@drawable/vastuvision_logo"
+            android:contentDescription="VastuVision AI Logo"/>
+
         <TextView
             android:id="@+id/tvAppTitle"
             android:layout_width="wrap_content"
