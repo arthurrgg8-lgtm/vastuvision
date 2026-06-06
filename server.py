@@ -49,6 +49,7 @@ SECURITY_HEADERS = {
         "font-src https://fonts.gstatic.com; "
         "img-src 'self' data: blob:; "
         "script-src 'self'; "
+        "script-src 'self' 'unsafe-inline'; "
         "connect-src 'self' https://api.groq.com; "
         "frame-ancestors 'none'; "
         "base-uri 'self'; "
