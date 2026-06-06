@@ -2049,20 +2049,34 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
     }
 }
 
-/* ── Mobile Jitter Fixes: disable heavy animations & prevent scroll bounce ── */
+/* ── Mobile Touch Fixes: prevent rendering gaps when scrolling ── */
 @media (hover: none) and (pointer: coarse) {
     .particle-canvas { display: none !important; }
     .cursor-follower { display: none !important; }
     .tilt-card { perspective: none !important; transform: none !important; }
     .tilt-card .tilt-shine { display: none !important; }
     .tilt-card .tilt-inner { transform: none !important; }
-    .glow-bg { will-change: auto !important; }
-    .glow-1, .glow-2, .glow-3 { animation: none !important; }
+    .glow-bg { display: none !important; }
     .vastu-mandala-grid { animation: none !important; }
     .grid-scanner { animation: none !important; }
     .illustrator-ring { animation: none !important; }
     .hud-scan-line { animation: none !important; }
     .furniture-icon-badge { animation: none !important; }
+    
+    /* Remove backdrop-filter gaps on mobile scroll */
+    .app-header { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    .landing-header { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    .room-card { backdrop-filter: none !important; }
+    .upload-card { backdrop-filter: none !important; }
+    .kpi-card { backdrop-filter: none !important; }
+    .dash-card { backdrop-filter: none !important; }
+    .sugg-card { backdrop-filter: none !important; }
+    .faq-card { backdrop-filter: none !important; }
+    .capture-guide-box { backdrop-filter: none !important; }
+    .system-hud-card { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    .modal-overlay { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+    .btn-secondary { backdrop-filter: none !important; }
+    .theme-toggle-btn { backdrop-filter: none !important; }
 }
 
 /* Mobile */
@@ -2185,8 +2199,8 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
 
 /* ── FAQ & SEO Section ────────────────────────────────────────────────────── */
 .faq-section {
-    margin-top: 60px;
-    padding-top: 40px;
+    margin-top: 24px;
+    padding-top: 32px;
     border-top: 1px solid var(--border-glass);
 }
 
