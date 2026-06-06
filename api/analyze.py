@@ -5,8 +5,12 @@ import urllib.error
 import re
 import traceback
 import logging
+import base64
+import time
+import uuid
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler
+from collections import defaultdict
 
 # Structured logging
 logging.basicConfig(level=logging.INFO)
@@ -17,8 +21,121 @@ API_KEY = os.environ.get("GROQ_API_KEY")
 MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
 ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
 
+# Security constants
 MAX_PAYLOAD_BYTES = 16 * 1024 * 1024  # 16MB max request body
+MAX_BASE64_IMAGE_BYTES = 10 * 1024 * 1024  # 10MB per image after base64 decode
 ALLOWED_ROOM_TYPES = {"bedroom", "kitchen", "living_room", "pooja_room", "bathroom"}
+MAX_CORRECTION_LENGTH = 2000
+MAX_IMAGES = 4
+
+# CORS origin validation - only allow specific origins
+ALLOWED_ORIGINS = {
+    "https://vastuvision-beta.vercel.app",
+    "https://vastuvision-m6zxhxx1b-anudit888s-projects.vercel.app",
+    "http://localhost:3000",
+    "http://localhost:9091",
+}
+
+# Rate limiting: requests per IP per window (simple in-memory)
+RATE_LIMIT_WINDOW = 60  # seconds
+RATE_LIMIT_MAX = 30  # max requests per window per IP
+_rate_limit_store: dict = defaultdict(list)
+
+# Allowed image MIME types for magic byte validation
+ALLOWED_IMAGE_SIGNATURES = {
+    b'\xff\xd8\xff': 'image/jpeg',
+    b'\x89PNG\r\n\x1a\n': 'image/png',
+    b'GIF87a': 'image/gif',
+    b'GIF89a': 'image/gif',
+    b'RIFF': 'image/webp',  # WEBP starts with RIFF
+}
+
+
+def _check_rate_limit(ip_address: str) -> bool:
+    """Returns True if request is allowed, False if rate limited."""
+    now = time.time()
+    window_start = now - RATE_LIMIT_WINDOW
+    
+    # Clean old entries and get current count
+    entries = _rate_limit_store[ip_address]
+    active = [t for t in entries if t > window_start]
+    _rate_limit_store[ip_address] = active
+    
+    if len(active) >= RATE_LIMIT_MAX:
+        return False
+    
+    _rate_limit_store[ip_address].append(now)
+    return True
+
+
+def _validate_image_base64(b64_string: str) -> tuple[bool, str]:
+    """Validate that a base64 string decodes to a valid image format.
+    Returns (is_valid, error_message_or_empty)."""
+    if not b64_string or not isinstance(b64_string, str):
+        return False, "Image data is empty or not a string."
+    
+    # Strip data URI prefix if present
+    if "," in b64_string:
+        b64_string = b64_string.split(",")[1]
+    
+    # Remove whitespace/newlines that may have been inserted during transmission
+    b64_string = re.sub(r'\s+', '', b64_string)
+    
+    if not b64_string:
+        return False, "Image data is empty after processing."
+    
+    # Check approximate decoded size
+    approx_size = len(b64_string) * 3 // 4
+    if approx_size > MAX_BASE64_IMAGE_BYTES:
+        return False, f"Image too large. Maximum: {MAX_BASE64_IMAGE_BYTES // (1024*1024)}MB."
+    if approx_size < 100:  # Too small to be a real image
+        return False, "Image data is too small to be valid."
+    
+    try:
+        decoded = base64.b64decode(b64_string, validate=True)
+    except (base64.binascii.Error, Exception):
+        return False, "Invalid base64 encoding in image data."
+    
+    # Magic byte validation
+    matched = False
+    for signature, mime_type in ALLOWED_IMAGE_SIGNATURES.items():
+        if decoded[:len(signature)] == signature:
+            matched = True
+            break
+    
+    if not matched:
+        return False, "Unsupported image format. Only JPEG, PNG, GIF, and WebP are allowed."
+    
+    return True, ""
+
+
+def _sanitize_prompt_input(text: str) -> str:
+    """Sanitize user input before inclusion in AI prompts to prevent prompt injection.
+    Strips control characters and limits length."""
+    if not text or not isinstance(text, str):
+        return ""
+    
+    # Strip control characters (except newlines and tabs)
+    sanitized = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', text)
+    
+    # Limit length
+    if len(sanitized) > MAX_CORRECTION_LENGTH:
+        sanitized = sanitized[:MAX_CORRECTION_LENGTH]
+    
+    return sanitized
+
+
+def _generate_request_id() -> str:
+    """Generate a unique request ID for tracing."""
+    return uuid.uuid4().hex[:12]
+
+
+def _is_allowed_origin(origin: str) -> bool:
+    """Check if the request origin is in the allowed list."""
+    if not origin:
+        return False
+    return origin in ALLOWED_ORIGINS
+
 
 # Security headers applied to all responses
 SECURITY_HEADERS = {
@@ -26,7 +143,19 @@ SECURITY_HEADERS = {
     "X-Frame-Options": "DENY",
     "X-XSS-Protection": "1; mode=block",
     "Referrer-Policy": "strict-origin-when-cross-origin",
-    "Content-Security-Policy": "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; script-src 'self'; connect-src 'self'",
+    "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+    "Permissions-Policy": "camera=(self \"https://vastuvision-beta.vercel.app\"), microphone=(), geolocation=()",
+    "Content-Security-Policy": (
+        "default-src 'self'; "
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+        "font-src https://fonts.gstatic.com; "
+        "img-src 'self' data: blob:; "
+        "script-src 'self'; "
+        "connect-src 'self' https://api.groq.com; "
+        "frame-ancestors 'none'; "
+        "base-uri 'self'; "
+        "form-action 'self'"
+    ),
 }
 
 
@@ -458,102 +587,217 @@ def generate_mock_analysis(room_type, previous_analysis=None, correction=None, l
 
 
 class handler(BaseHTTPRequestHandler):
+    def _get_client_ip(self) -> str:
+        """Extract client IP from headers, with proxy awareness."""
+        # Check for forwarded headers in order of trust
+        forwarded = self.headers.get("X-Forwarded-For")
+        if forwarded:
+            return forwarded.split(",")[0].strip()
+        real_ip = self.headers.get("X-Real-IP")
+        if real_ip:
+            return real_ip.strip()
+        return self.client_address[0]
+
+    def _get_origin_header(self) -> str:
+        """Get the Origin or Referer header for CORS validation."""
+        origin = self.headers.get("Origin", "")
+        if origin:
+            return origin
+        referer = self.headers.get("Referer", "")
+        if referer:
+            # Extract origin from referer URL
+            match = re.match(r'^(https?://[^/]+)', referer)
+            if match:
+                return match.group(1)
+        return ""
+
     def _send_security_headers(self):
         """Inject security headers into every response."""
         for header, value in SECURITY_HEADERS.items():
             self.send_header(header, value)
 
+    def _get_cors_origin(self) -> str:
+        """Return the allowed CORS origin, validated against whitelist."""
+        request_origin = self._get_origin_header()
+        if _is_allowed_origin(request_origin):
+            return request_origin
+        # Fall back to the primary production origin for non-browser clients
+        return "https://vastuvision-beta.vercel.app"
+
     def do_OPTIONS(self):
         """CORS preflight request handling."""
+        cors_origin = self._get_cors_origin()
         self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-        self.end_headers()
-
-    def send_error_response(self, code, message):
-        """Helper to send unified JSON error responses."""
-        self.send_response(code)
-        self.send_header('Content-Type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Origin', cors_origin)
+        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type, X-Request-ID')
+        self.send_header('Access-Control-Max-Age', '86400')
         self._send_security_headers()
         self.end_headers()
-        self.wfile.write(json.dumps({"error": message}).encode('utf-8'))
+
+    def send_error_response(self, code, message, request_id=""):
+        """Helper to send unified JSON error responses with security headers."""
+        self.send_response(code)
+        self.send_header('Content-Type', 'application/json')
+        cors_origin = self._get_cors_origin()
+        self.send_header('Access-Control-Allow-Origin', cors_origin)
+        self.send_header('Cache-Control', 'no-store')
+        if request_id:
+            self.send_header('X-Request-ID', request_id)
+        self._send_security_headers()
+        self.end_headers()
+        error_body = {"error": message}
+        if request_id:
+            error_body["request_id"] = request_id
+        self.wfile.write(json.dumps(error_body).encode('utf-8'))
 
     def do_POST(self):
         """Main endpoint logic for Vastu layout analysis."""
+        request_id = _generate_request_id()
+        client_ip = self._get_client_ip()
+        
+        # --- Rate limiting ---
+        if not _check_rate_limit(client_ip):
+            logger.warning("Rate limit exceeded for IP=%s request_id=%s", client_ip, request_id)
+            self.send_response(429)
+            self.send_header('Content-Type', 'application/json')
+            cors_origin = self._get_cors_origin()
+            self.send_header('Access-Control-Allow-Origin', cors_origin)
+            self.send_header('Retry-After', str(RATE_LIMIT_WINDOW))
+            self._send_security_headers()
+            self.end_headers()
+            self.wfile.write(json.dumps({
+                "error": "Too many requests. Please try again later.",
+                "request_id": request_id
+            }).encode('utf-8'))
+            return
+
+        logger.info("request_id=%s method=POST path=%s ip=%s", request_id, self.path, client_ip)
+
+        # --- Content-Length validation ---
         content_length_str = self.headers.get('Content-Length')
         if not content_length_str:
-            self.send_error_response(411, "Content-Length header required.")
+            self.send_error_response(411, "Content-Length header required.", request_id)
             return
 
         try:
             content_length = int(content_length_str)
         except ValueError:
-            self.send_error_response(400, "Invalid Content-Length header.")
+            self.send_error_response(400, "Invalid Content-Length header.", request_id)
             return
 
         if content_length > MAX_PAYLOAD_BYTES:
-            self.send_error_response(413, f"Payload too large. Maximum allowed: {MAX_PAYLOAD_BYTES // (1024*1024)}MB.")
+            self.send_error_response(413, f"Payload too large. Maximum allowed: {MAX_PAYLOAD_BYTES // (1024*1024)}MB.", request_id)
             return
 
-        post_data = self.rfile.read(content_length)
+        # --- Read and parse body ---
+        try:
+            post_data = self.rfile.read(content_length)
+        except Exception:
+            self.send_error_response(400, "Failed to read request body.", request_id)
+            return
         
         try:
             request_payload = json.loads(post_data.decode('utf-8'))
-            room_type = request_payload.get('room_type', 'unknown')
+        except json.JSONDecodeError:
+            self.send_error_response(400, "Invalid JSON in request body.", request_id)
+            return
+        except UnicodeDecodeError:
+            self.send_error_response(400, "Request body is not valid UTF-8.", request_id)
+            return
 
-            # --- Room type whitelist ---
-            if room_type not in ALLOWED_ROOM_TYPES:
-                self.send_error_response(400, f"Invalid room type. Allowed: {', '.join(sorted(ALLOWED_ROOM_TYPES))}")
-                return
-            
-            previous_analysis = request_payload.get('previous_analysis')
-            correction = request_payload.get('correction')
-            language = request_payload.get('language', 'english')
-            
-            is_mock_mode = not API_KEY or API_KEY == "your-groq-api-key"
+        # --- Validate room_type ---
+        room_type = request_payload.get('room_type', 'unknown')
+        if not isinstance(room_type, str) or room_type not in ALLOWED_ROOM_TYPES:
+            self.send_error_response(400, f"Invalid room type. Allowed: {', '.join(sorted(ALLOWED_ROOM_TYPES))}", request_id)
+            return
+        
+        previous_analysis = request_payload.get('previous_analysis')
+        correction = request_payload.get('correction')
+        language = request_payload.get('language', 'english')
+        
+        # --- Validate language ---
+        if language not in ("english", "nepali"):
+            language = "english"
+        
+        is_mock_mode = not API_KEY or API_KEY == "your-groq-api-key"
 
+        try:
             if previous_analysis and correction:
-                # --- Correction length guard ---
-                if len(str(correction)) > 2000:
-                    self.send_error_response(400, "Correction text too long. Maximum 2000 characters.")
+                # --- Validate previous_analysis structure ---
+                if not isinstance(previous_analysis, dict):
+                    self.send_error_response(400, "Invalid previous_analysis format.", request_id)
                     return
+                
+                # --- Sanitize correction to prevent prompt injection ---
+                sanitized_correction = _sanitize_prompt_input(correction)
+                if not sanitized_correction:
+                    self.send_error_response(400, "Correction text is empty after sanitization.", request_id)
+                    return
+                if len(str(correction)) > MAX_CORRECTION_LENGTH:
+                    self.send_error_response(400, f"Correction text too long. Maximum {MAX_CORRECTION_LENGTH} characters.", request_id)
+                    return
+                
                 if is_mock_mode:
-                    logger.info("Refinement request for room_type=%s (Demo Mode)", room_type)
-                    response_json = generate_mock_analysis(room_type, previous_analysis, correction, language)
+                    logger.info("request_id=%s Refinement request room_type=%s (Demo Mode)", request_id, room_type)
+                    response_json = generate_mock_analysis(room_type, previous_analysis, sanitized_correction, language)
                 else:
-                    logger.info("Refinement request for room_type=%s", room_type)
-                    response_json = self.call_groq_refinement(room_type, previous_analysis, correction, language)
+                    logger.info("request_id=%s Refinement request room_type=%s", request_id, room_type)
+                    response_json = self.call_groq_refinement(room_type, previous_analysis, sanitized_correction, language)
             else:
                 images = request_payload.get('images', {})
-                if not images:
-                    self.send_error_response(400, "No images provided.")
+                if not images or not isinstance(images, dict):
+                    self.send_error_response(400, "No images provided.", request_id)
                     return
+                
+                # --- Validate images ---
+                if len(images) > MAX_IMAGES:
+                    self.send_error_response(400, f"Too many images. Maximum {MAX_IMAGES}.", request_id)
+                    return
+                
+                # Validate each image is a valid base64 string encoding a real image
+                for direction in ['north', 'south', 'east', 'west']:
+                    img_b64 = images.get(direction)
+                    if img_b64:
+                        if not isinstance(img_b64, str):
+                            self.send_error_response(400, f"Image for {direction} must be a string.", request_id)
+                            return
+                        is_valid, error_msg = _validate_image_base64(img_b64)
+                        if not is_valid:
+                            self.send_error_response(400, f"Invalid image for {direction}: {error_msg}", request_id)
+                            return
+                
                 if is_mock_mode:
-                    logger.info("Vision analysis request for room_type=%s (Demo Mode)", room_type)
+                    logger.info("request_id=%s Vision analysis room_type=%s (Demo Mode)", request_id, room_type)
                     response_json = generate_mock_analysis(room_type, language=language)
                 else:
-                    logger.info("Vision analysis request for room_type=%s (%d images)", room_type, len(images))
+                    logger.info("request_id=%s Vision analysis room_type=%s (%d images)", request_id, room_type, len(images))
                     response_json = self.call_groq_vision(room_type, images, language)
             
-            # Send response
+            # Send success response
+            cors_origin = self._get_cors_origin()
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Origin', cors_origin)
+            self.send_header('X-Request-ID', request_id)
             self._send_security_headers()
             self.end_headers()
             self.wfile.write(json.dumps(response_json).encode('utf-8'))
+            logger.info("request_id=%s Response sent successfully", request_id)
             
         except json.JSONDecodeError:
-            self.send_error_response(400, "Invalid JSON in request body.")
+            self.send_error_response(400, "Invalid JSON in request body.", request_id)
         except Exception as e:
-            logger.error("Error during analysis: %s", traceback.format_exc())
-            self.send_error_response(500, "Analysis failed. Please try again later.")
+            logger.error("request_id=%s Error during analysis: %s", request_id, traceback.format_exc())
+            # Sanitized error — don't leak internals to client
+            self.send_error_response(500, "Analysis failed. Please try again later.", request_id)
 
     def call_groq_vision(self, room_type, images, language="english"):
+        # Sanitize room_type for prompt (already validated against whitelist)
+        safe_room_type = room_type.replace("_", " ")
+        
         system_prompt = f"""You are a Vastu Shastra expert AI specializing in architectural layout and interior design.
-Analyze the provided 4 directional photos of a '{room_type}' (facing North, South, East, and West walls).
+Analyze the provided 4 directional photos of a '{safe_room_type}' (facing North, South, East, and West walls).
 
 Task:
 1. Detect all visible furniture and key household items.
@@ -561,7 +805,7 @@ Task:
 3. Evaluate if the placement complies with Vastu Shastra guidelines.
 4. Calculate an overall Vastu Compliance Score (0-100) based on items detected (default to 100 if all good, deduct 20 points for each critical violation, and 10 for each warning).
 
-Vastu Rules Reference for '{room_type}':
+Vastu Rules Reference for '{safe_room_type}':
 - Bed / Sleeping Head: Ideal: South or East. Wrong: North (disturbs body magnetic field). Status: critical.
 - Cooking Stove: Ideal: South-East. Wrong: North-East or North. Status: critical.
 - Main Entrance: Ideal: North, East, North-East. Wrong: South. Status: warning.
@@ -585,7 +829,7 @@ You must return ONLY a single valid raw JSON object matching the schema below. N
         system_prompt += f"""
 Expected JSON Schema:
 {{
-  "room_type": "{room_type}",
+  "room_type": "{safe_room_type}",
   "vastu_score": 80,
   "objects": [
     {{
@@ -608,14 +852,16 @@ Expected JSON Schema:
 }}"""
 
         content_list = [
-            {"type": "text", "text": f"Please analyze these 4 directional photos of the {room_type} for Vastu Shastra compliance."}
+            {"type": "text", "text": f"Please analyze these 4 directional photos of the {safe_room_type} for Vastu Shastra compliance."}
         ]
 
-        # Add available images
+        # Add available images with sanitized base64
         for direction in ['north', 'south', 'east', 'west']:
             img_b64 = images.get(direction)
             if img_b64:
-                img_b64 = str(img_b64).replace("\n", "").replace("\r", "").replace(" ", "")
+                # Strip whitespace and data URI prefix
+                img_b64 = str(img_b64)
+                img_b64 = re.sub(r'\s+', '', img_b64)
                 if "," in img_b64:
                     img_b64 = img_b64.split(",")[1]
                 
@@ -649,9 +895,11 @@ Expected JSON Schema:
         return self._send_groq_request(payload, "Vision")
 
     def call_groq_refinement(self, room_type, previous_analysis, correction, language="english"):
+        safe_room_type = room_type.replace("_", " ")
+        
         system_prompt = (
             f"You are a Vastu Shastra expert AI specializing in interior room layout analysis.\n"
-            + f"The user previously ran an AI Vastu analysis on their '{room_type}'.\n"
+            + f"The user previously ran an AI Vastu analysis on their '{safe_room_type}'.\n"
             + f"Here is the previous JSON analysis results:\n"
             + json.dumps(previous_analysis)
             + "\n\nPlease adjust the Vastu analysis JSON based on the user's manual input:\n"
@@ -666,7 +914,7 @@ Expected JSON Schema:
         system_prompt += f"""
 Expected JSON Schema:
 {{
-  "room_type": "{room_type}",
+  "room_type": "{safe_room_type}",
   "vastu_score": 80,
   "objects": [
     {{
@@ -703,6 +951,10 @@ Expected JSON Schema:
         if not API_KEY:
             raise Exception("GROQ_API_KEY environment variable is not set on the serverless runtime.")
 
+        # Validate the payload before sending (all fields should be strings or expected types)
+        if not isinstance(payload, dict):
+            raise Exception("Invalid payload structure.")
+        
         req_body = json.dumps(payload).encode('utf-8')
         
         req = urllib.request.Request(
@@ -737,10 +989,13 @@ Expected JSON Schema:
         except urllib.error.HTTPError as he:
             err_body = he.read().decode('utf-8')
             logger.error("Groq %s API HTTP Error %d: %s", label, he.code, err_body)
-            raise Exception(f"Groq API returned error code {he.code}")
+            raise Exception("AI analysis service returned an error. Please try again.")
         except json.JSONDecodeError as je:
             logger.error("Failed to parse Groq %s response as JSON: %s", label, str(je))
             raise Exception("AI returned invalid response format. Please try again.")
+        except urllib.error.URLError as ue:
+            logger.error("Network error communicating with Groq (%s): %s", label, str(ue))
+            raise Exception("Unable to reach AI analysis service. Check your internet connection.")
         except Exception as e:
             logger.error("Error communicating with Groq (%s): %s", label, str(e))
-            raise e
+            raise
