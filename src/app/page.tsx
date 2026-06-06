@@ -447,17 +447,24 @@ export default function Home() {
   const themeIcon = themeMode === "light" ? "☀️" : themeMode === "dark" ? "🌙" : "🌓";
   const themeLabel = themeMode === "light" ? "Light" : themeMode === "dark" ? "Dark" : "Auto";
 
-  // --- Cursor Follower State ---
+  // --- Touch Device Detection ---
+  const [isTouchDevice] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  });
+
+  // --- Cursor Follower State (desktop only) ---
   const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [cursorHovering, setCursorHovering] = useState(false);
 
   useEffect(() => {
+    if (isTouchDevice) return;
     const move = (e: MouseEvent) => {
       setCursorPos({ x: e.clientX, y: e.clientY });
     };
     window.addEventListener("mousemove", move);
     return () => window.removeEventListener("mousemove", move);
-  }, []);
+  }, [isTouchDevice]);
 
   // --- 3D Tilt Refs ---
   const tiltRefs = useRef<Map<string, HTMLDivElement>>(new Map());
@@ -907,8 +914,8 @@ export default function Home() {
   if (showLanding) {
     return (
       <>
-        {/* Interactive Particle Background */}
-        <ParticleBackground systemTheme={resolvedTheme} />
+        {/* Interactive Particle Background (desktop only) */}
+        {!isTouchDevice && <ParticleBackground systemTheme={resolvedTheme} />}
 
         {/* Background decorations */}
         <div className="glow-bg glow-1"></div>
@@ -1055,18 +1062,20 @@ export default function Home() {
 
   return (
     <>
-      {/* Interactive Particle Background */}
-      <ParticleBackground systemTheme={resolvedTheme} />
+      {/* Interactive Particle Background (desktop only) */}
+      {!isTouchDevice && <ParticleBackground systemTheme={resolvedTheme} />}
 
-      {/* Cursor Follower */}
-      <div
-        className={`cursor-follower ${cursorHovering ? "hovering" : ""}`}
-        style={{
-          left: `${cursorPos.x}px`,
-          top: `${cursorPos.y}px`,
-        }}
-        aria-hidden="true"
-      />
+      {/* Cursor Follower (desktop only) */}
+      {!isTouchDevice && (
+        <div
+          className={`cursor-follower ${cursorHovering ? "hovering" : ""}`}
+          style={{
+            left: `${cursorPos.x}px`,
+            top: `${cursorPos.y}px`,
+          }}
+          aria-hidden="true"
+        />
+      )}
 
       {/* Background decorations */}
       <div className="glow-bg glow-1"></div>

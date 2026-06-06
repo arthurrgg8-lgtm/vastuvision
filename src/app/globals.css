@@ -5,32 +5,38 @@
    ========================================================================== */
 
 /* ── Design Tokens ───────────────────────────────────────────────────────── */
+/* ── Base Reset ──────────────────────────────────────────────────────────── */
+html, body {
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+}
+
 :root {
-    /* ─── Light Mode (default fallback, overridden by prefers-color-scheme) ── */
+    /* ─── Dark Mode (default) ── */
     --color-scheme: dark;
 
-    /* Backgrounds (Serene twilight night sky) */
-    /* Backgrounds (Serene twilight night sky) */
-    --bg-dark: #070c12;
-    --bg-elevated: #0d141f;
-    --surface-glass: rgba(13, 24, 38, 0.62);
-    --surface-glass-hover: rgba(19, 35, 56, 0.78);
-    --surface-glass-strong: rgba(16, 29, 46, 0.88);
-    --border-glass: rgba(20, 184, 166, 0.09); /* Calming energy teal border */
-    --border-glass-hover: rgba(250, 204, 21, 0.18); /* Hover glints of sunset gold */
-    --border-active: rgba(250, 204, 21, 0.5);
+    /* Backgrounds — Pure deep black for true dark mode */
+    --bg-dark: #000000;
+    --bg-elevated: #05080e;
+    --surface-glass: rgba(6, 12, 22, 0.70);
+    --surface-glass-hover: rgba(10, 18, 32, 0.85);
+    --surface-glass-strong: rgba(8, 14, 26, 0.92);
+    --border-glass: rgba(20, 184, 166, 0.07);
+    --border-glass-hover: rgba(250, 204, 21, 0.14);
+    --border-active: rgba(250, 204, 21, 0.45);
 
-    /* Primary (Serene Healing Teal - Air & Water elements / Prana) */
+    /* Primary */
     --primary: #14b8a6;
     --primary-hover: #2dd4bf;
-    --primary-glow: rgba(20, 184, 166, 0.28);
-    --primary-surface: rgba(20, 184, 166, 0.07);
+    --primary-glow: rgba(20, 184, 166, 0.25);
+    --primary-surface: rgba(20, 184, 166, 0.05);
 
-    /* Gold / Accent (Divine Solar Amber - Fire & Spirit / Purity) */
+    /* Gold */
     --gold: #cca325;
     --gold-bright: #facc15;
-    --gold-glow: rgba(250, 204, 21, 0.22);
-    --gold-surface: rgba(250, 204, 21, 0.05);
+    --gold-glow: rgba(250, 204, 21, 0.20);
+    --gold-surface: rgba(250, 204, 21, 0.04);
 
     /* Text */
     --text-primary: #f3f5f9;
@@ -39,13 +45,13 @@
 
     /* Status */
     --status-good: #10b981;
-    --status-good-bg: rgba(16, 185, 129, 0.10);
+    --status-good-bg: rgba(16, 185, 129, 0.08);
     --status-good-text: #a7f3d0;
     --status-warning: #f59e0b;
-    --status-warning-bg: rgba(245, 158, 11, 0.10);
+    --status-warning-bg: rgba(245, 158, 11, 0.08);
     --status-warning-text: #fde68a;
     --status-critical: #ef4444;
-    --status-critical-bg: rgba(239, 68, 68, 0.10);
+    --status-critical-bg: rgba(239, 68, 68, 0.08);
     --status-critical-text: #fca5a5;
 
     /* Typography */
@@ -65,11 +71,11 @@
     --radius-lg: 20px;
     --radius-xl: 28px;
 
-    /* Shadows */
-    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
-    --shadow-card-hover: 0 8px 40px rgba(0, 0, 0, 0.42), 0 2px 4px rgba(0, 0, 0, 0.25);
-    --shadow-glow-gold: 0 0 30px rgba(250, 204, 21, 0.14);
-    --shadow-glow-primary: 0 0 30px rgba(20, 184, 166, 0.16);
+    /* Shadows — deeper in dark mode */
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-card-hover: 0 8px 40px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.35);
+    --shadow-glow-gold: 0 0 30px rgba(250, 204, 21, 0.12);
+    --shadow-glow-primary: 0 0 30px rgba(20, 184, 166, 0.14);
 }
 
 /* ── Theme Toggle Button ────────────────────────────────────────────────── */
@@ -348,38 +354,38 @@
 [data-theme="dark"] {
     --color-scheme: dark;
     
-    --bg-dark: #070c12;
-    --bg-elevated: #0d141f;
-    --surface-glass: rgba(13, 24, 38, 0.62);
-    --surface-glass-hover: rgba(19, 35, 56, 0.78);
-    --surface-glass-strong: rgba(16, 29, 46, 0.88);
-    --border-glass: rgba(20, 184, 166, 0.09);
-    --border-glass-hover: rgba(250, 204, 21, 0.18);
-    --border-active: rgba(250, 204, 21, 0.5);
+    --bg-dark: #000000;
+    --bg-elevated: #05080e;
+    --surface-glass: rgba(6, 12, 22, 0.70);
+    --surface-glass-hover: rgba(10, 18, 32, 0.85);
+    --surface-glass-strong: rgba(8, 14, 26, 0.92);
+    --border-glass: rgba(20, 184, 166, 0.07);
+    --border-glass-hover: rgba(250, 204, 21, 0.14);
+    --border-active: rgba(250, 204, 21, 0.45);
     --primary: #14b8a6;
     --primary-hover: #2dd4bf;
-    --primary-glow: rgba(20, 184, 166, 0.28);
-    --primary-surface: rgba(20, 184, 166, 0.07);
+    --primary-glow: rgba(20, 184, 166, 0.25);
+    --primary-surface: rgba(20, 184, 166, 0.05);
     --gold: #cca325;
     --gold-bright: #facc15;
-    --gold-glow: rgba(250, 204, 21, 0.22);
-    --gold-surface: rgba(250, 204, 21, 0.05);
+    --gold-glow: rgba(250, 204, 21, 0.20);
+    --gold-surface: rgba(250, 204, 21, 0.04);
     --text-primary: #f3f5f9;
     --text-secondary: #c5cbdc;
     --text-muted: #7d879e;
     --status-good: #10b981;
-    --status-good-bg: rgba(16, 185, 129, 0.10);
+    --status-good-bg: rgba(16, 185, 129, 0.08);
     --status-good-text: #a7f3d0;
     --status-warning: #f59e0b;
-    --status-warning-bg: rgba(245, 158, 11, 0.10);
+    --status-warning-bg: rgba(245, 158, 11, 0.08);
     --status-warning-text: #fde68a;
     --status-critical: #ef4444;
-    --status-critical-bg: rgba(239, 68, 68, 0.10);
+    --status-critical-bg: rgba(239, 68, 68, 0.08);
     --status-critical-text: #fca5a5;
-    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
-    --shadow-card-hover: 0 8px 40px rgba(0, 0, 0, 0.42), 0 2px 4px rgba(0, 0, 0, 0.25);
-    --shadow-glow-gold: 0 0 30px rgba(250, 204, 21, 0.14);
-    --shadow-glow-primary: 0 0 30px rgba(20, 184, 166, 0.16);
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-card-hover: 0 8px 40px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.35);
+    --shadow-glow-gold: 0 0 30px rgba(250, 204, 21, 0.12);
+    --shadow-glow-primary: 0 0 30px rgba(20, 184, 166, 0.14);
 }
 
 .container {
@@ -415,7 +421,7 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
 .particle-canvas {
     position: fixed;
     top: 0; left: 0;
-    width: 100vw; height: 100vh;
+    width: 100%; height: 100%;
     z-index: 0;
     pointer-events: none;
     opacity: 0.5;
@@ -2040,9 +2046,31 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
     }
 }
 
+/* ── Mobile Jitter Fixes: disable heavy animations & prevent scroll bounce ── */
+@media (hover: none) and (pointer: coarse) {
+    .particle-canvas { display: none !important; }
+    .cursor-follower { display: none !important; }
+    .tilt-card { perspective: none !important; transform: none !important; }
+    .tilt-card .tilt-shine { display: none !important; }
+    .tilt-card .tilt-inner { transform: none !important; }
+    .glow-bg { will-change: auto !important; }
+    .glow-1, .glow-2, .glow-3 { animation: none !important; }
+    .vastu-mandala-grid { animation: none !important; }
+    .grid-scanner { animation: none !important; }
+    .illustrator-ring { animation: none !important; }
+    .hud-scan-line { animation: none !important; }
+    .furniture-icon-badge { animation: none !important; }
+}
+
 /* Mobile */
 @media (max-width: 640px) {
     body { font-size: 14px; }
+    
+    html, body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
     
     .container { padding: 0 16px; }
 
@@ -2988,8 +3016,8 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
 .splash-screen-wrapper {
     position: fixed;
     inset: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background: var(--bg-dark);
     display: flex;
     flex-direction: column;
