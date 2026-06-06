@@ -554,7 +554,7 @@ export default function Home() {
       const target = analysisResult.vastu_score || 0;
       let start = 0;
       if (target === 0) {
-        setAnimatedScore(0);
+        setTimeout(() => setAnimatedScore(0), 0);
         return;
       }
       const duration = 1000; // 1 second
@@ -596,7 +596,7 @@ export default function Home() {
       }, stepTime);
       return () => clearInterval(timer);
     } else {
-      setHudComplianceScore(40);
+      setTimeout(() => setHudComplianceScore(40), 0);
     }
   }, [hudPhase, showLanding]);
 
