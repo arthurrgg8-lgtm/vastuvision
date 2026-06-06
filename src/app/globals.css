@@ -2260,3 +2260,271 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
     font-size: 0.85rem;
 }
 
+/* ── System HUD Card Styles ──────────────────────────────────────── */
+.system-hud-card {
+    width: 100%;
+    max-width: 380px;
+    background: rgba(13, 20, 30, 0.65);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.system-hud-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(20, 184, 166, 0.3), transparent);
+}
+
+.hud-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 8px;
+}
+
+.hud-live-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--primary-hover);
+    background: rgba(20, 184, 166, 0.08);
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(20, 184, 166, 0.15);
+}
+
+.hud-pulse-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--primary);
+    animation: hudDotPulse 1.5s infinite ease-in-out;
+}
+
+@keyframes hudDotPulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1.25); box-shadow: 0 0 12px var(--primary-hover); }
+}
+
+.hud-step-indicator {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.hud-phase-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.hud-phase-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+}
+
+.hud-phase-desc {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.hud-visual-display {
+    background: rgba(7, 10, 15, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 16px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Phase 0: Scanning HUD Styles */
+.hud-scan-frame {
+    position: absolute;
+    inset: 10px;
+    border: 1px solid rgba(20, 184, 166, 0.15);
+    border-radius: 6px;
+    pointer-events: none;
+}
+.hud-scan-frame::before, .hud-scan-frame::after {
+    content: '';
+    position: absolute;
+    width: 8px; height: 8px;
+    border-color: var(--primary);
+    border-style: solid;
+}
+.hud-scan-frame::before {
+    top: -1px; left: -1px;
+    border-width: 1px 0 0 1px;
+}
+.hud-scan-frame::after {
+    bottom: -1px; right: -1px;
+    border-width: 0 1px 1px 0;
+}
+.hud-scan-line {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    box-shadow: 0 0 10px var(--primary);
+    animation: hudScanMove 2.5s ease-in-out infinite;
+}
+@keyframes hudScanMove {
+    0% { top: 10%; }
+    50% { top: 90%; }
+    100% { top: 10%; }
+}
+.hud-compass-badge {
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    z-index: 1;
+}
+.hud-compass-value {
+    font-family: monospace;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--gold-bright);
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.3);
+}
+
+/* Phase 1: Furniture Mapping Styles */
+.hud-mapping-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+.hud-mapping-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+}
+.hud-mapping-item.detected {
+    border-color: rgba(20, 184, 166, 0.2);
+    background: rgba(20, 184, 166, 0.03);
+}
+.hud-status-badge {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+.hud-status-badge.scanning {
+    color: var(--gold-bright);
+    background: rgba(250, 204, 21, 0.1);
+    animation: hudTextPulse 1.5s infinite;
+}
+.hud-status-badge.done {
+    color: var(--primary-hover);
+    background: rgba(20, 184, 166, 0.1);
+}
+
+/* Phase 2: Score Dial Styles */
+.hud-score-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+.hud-score-ring {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: conic-gradient(var(--primary) calc(var(--hud-score-pct) * 1%), rgba(255, 255, 255, 0.05) 0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 15px var(--primary-glow);
+}
+.hud-score-ring::after {
+    content: '';
+    position: absolute;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: rgb(10, 15, 22);
+}
+.hud-score-val {
+    position: relative;
+    z-index: 1;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff;
+    font-family: monospace;
+}
+.hud-score-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.hud-score-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.hud-score-grade {
+    font-size: 0.7rem;
+    color: var(--primary-hover);
+    font-weight: 700;
+}
+
+/* Phase 3: Remedies Styles */
+.hud-remedies-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: hidden;
+}
+.hud-remedy-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 6px 10px;
+    border-radius: 6px;
+    border-left: 2px solid var(--primary);
+}
+.hud-remedy-icon {
+    color: var(--primary-hover);
+    font-weight: bold;
+}
+.hud-remedy-txt {
+    color: var(--text-secondary);
+    line-height: 1.35;
+}
+
+

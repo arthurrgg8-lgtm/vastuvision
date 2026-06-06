@@ -289,6 +289,8 @@ export default function Home() {
   // --- Core State ---
   const [activeLanguage, setActiveLanguage] = useState<"english" | "nepali">("english");
   const [showLanding, setShowLanding] = useState(true);
+  const [hudPhase, setHudPhase] = useState(0);
+  const [hudComplianceScore, setHudComplianceScore] = useState(40);
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
   const [selectedRoom, setSelectedRoom] = useState<RoomType | null>(null);
   
@@ -569,6 +571,35 @@ export default function Home() {
     }
   }, [currentStep, analysisResult]);
 
+  // --- Landing HUD Animation Effect ---
+  useEffect(() => {
+    if (!showLanding) return;
+    const interval = setInterval(() => {
+      setHudPhase((prev) => (prev + 1) % 4);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [showLanding]);
+
+  useEffect(() => {
+    if (!showLanding) return;
+    if (hudPhase === 2) {
+      let start = 40;
+      const target = 85;
+      const stepTime = 35;
+      const timer = setInterval(() => {
+        start += 3;
+        if (start >= target) {
+          start = target;
+          clearInterval(timer);
+        }
+        setHudComplianceScore(start);
+      }, stepTime);
+      return () => clearInterval(timer);
+    } else {
+      setHudComplianceScore(40);
+    }
+  }, [hudPhase, showLanding]);
+
   // --- Helpers for formatting and items ---
   const getRoomNameFormatted = (room: string) => {
     return room.replaceAll("_", " ").replace(/\b\w/g, (c) => c.toUpperCase());
@@ -742,7 +773,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="hero-animation-side">
+              <div className="hero-animation-side" style={{ display: "flex", flexDirection: "column", gap: "24px", alignItems: "center" }}>
                 <div className="vastu-hero-illustrator">
                   <div className="illustrator-ring ring-outer"></div>
                   <div className="illustrator-ring ring-middle"></div>
@@ -768,6 +799,105 @@ export default function Home() {
 
                   <div className="illustrator-center-core">
                     <span className="core-symbol">🧭</span>
+                  </div>
+                </div>
+
+                {/* HUD Live System Demo Card */}
+                <div className="system-hud-card">
+                  <div className="hud-header">
+                    <span className="hud-live-tag">
+                      <span className="hud-pulse-dot"></span>
+                      {activeLanguage === "english" ? "Live Simulation" : "लाइभ सिम्युलेसन"}
+                    </span>
+                    <span className="hud-step-indicator">
+                      {activeLanguage === "english" ? `Step ${hudPhase + 1} of 4` : `चरण ${hudPhase + 1} / 4`}
+                    </span>
+                  </div>
+
+                  <div className="hud-phase-info">
+                    <h4 className="hud-phase-title">
+                      {hudPhase === 0 && (activeLanguage === "english" ? "1. Spatial Boundary Scan" : "१. कोठा र दिशा स्क्यानिङ")}
+                      {hudPhase === 1 && (activeLanguage === "english" ? "2. Furniture Orientation Mapping" : "२. फर्निचर र दिशा पहिचान")}
+                      {hudPhase === 2 && (activeLanguage === "english" ? "3. Harmony Score Calculation" : "३. वास्तु अनुकूलता स्कोर")}
+                      {hudPhase === 3 && (activeLanguage === "english" ? "4. Remedy Generation" : "४. वास्तु उपाय निर्धारण")}
+                    </h4>
+                    <p className="hud-phase-desc">
+                      {hudPhase === 0 && (activeLanguage === "english" 
+                        ? "AI processes room photographs and links camera coordinates with compass direction angles."
+                        : "एआईले कम्पासको दिशासँग फोटोहरू मिलाएर कोठाको चौतर्फी सिमाना विश्लेषण गर्छ।")}
+                      {hudPhase === 1 && (activeLanguage === "english"
+                        ? "Object detection identifies furniture and positions them in the cardinal blueprint layout."
+                        : "फर्निचर र भौतिक वस्तुहरू पत्ता लगाई ३डी कोठाको लेआउटमा स्थानान्तरण गरिन्छ।")}
+                      {hudPhase === 2 && (activeLanguage === "english"
+                        ? "Applying ancient Vastu element matrices (Agni, Ishaan) to calculate layout compliance."
+                        : "पञ्चतत्व र प्राचीन वास्तुशास्त्रका नियम अनुसार कोठाको अनुपालन स्कोर गणना गरिन्छ।")}
+                      {hudPhase === 3 && (activeLanguage === "english"
+                        ? "Remedy algorithms generate placement corrections to balance energy currents without rebuilding."
+                        : "विना कुनै भौतिक तोडफोड, कोठाको ऊर्जा सुधार्न उपयुक्त उपायहरू तयार पारिन्छ।")}
+                    </p>
+                  </div>
+
+                  <div className="hud-visual-display">
+                    {hudPhase === 0 && (
+                      <>
+                        <div className="hud-scan-frame"></div>
+                        <div className="hud-scan-line"></div>
+                        <div className="hud-compass-badge">
+                          <span style={{ fontSize: "2rem" }}>🧭</span>
+                          <span className="hud-compass-value">
+                            {activeLanguage === "english" ? "Scanning East (90°)" : "पूर्व दिशा स्क्यानिङ (९०°)"}
+                          </span>
+                        </div>
+                      </>
+                    )}
+
+                    {hudPhase === 1 && (
+                      <div className="hud-mapping-list">
+                        <div className="hud-mapping-item detected">
+                          <span>🛏️ {activeLanguage === "english" ? "Master Bed (South-West)" : "बेड (दक्षिण-पश्चिम)"}</span>
+                          <span className="hud-status-badge done">✓ {activeLanguage === "english" ? "Mapped" : "पत्ता लाग्यो"}</span>
+                        </div>
+                        <div className="hud-mapping-item">
+                          <span>🍳 {activeLanguage === "english" ? "Stove (North-West)" : "चुलो (उत्तर-पश्चिम)"}</span>
+                          <span className="hud-status-badge scanning">{activeLanguage === "english" ? "Analyzing..." : "जाँच हुँदै..."}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {hudPhase === 2 && (
+                      <div className="hud-score-display">
+                        <div className="hud-score-ring" style={{ "--hud-score-pct": hudComplianceScore } as any}>
+                          <span className="hud-score-val">{hudComplianceScore}%</span>
+                        </div>
+                        <div className="hud-score-meta">
+                          <span className="hud-score-label">{activeLanguage === "english" ? "Compliance Score" : "सद्भाव स्कोर"}</span>
+                          <span className="hud-score-grade">
+                            {hudComplianceScore < 60 ? (activeLanguage === "english" ? "Evaluating..." : "मूल्याङ्कन हुँदै...") : (activeLanguage === "english" ? "✓ Balanced Energy" : "✓ सन्तुलित ऊर्जा")}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {hudPhase === 3 && (
+                      <div className="hud-remedies-list">
+                        <div className="hud-remedy-item">
+                          <span className="hud-remedy-icon">💡</span>
+                          <span className="hud-remedy-txt">
+                            {activeLanguage === "english" 
+                              ? "Move stove to South-East (Agneya) corner to balance the Fire element."
+                              : "अग्नि तत्व सन्तुलन गर्न चुलो दक्षिण-पूर्व कुनामा सार्नुहोस्।"}
+                          </span>
+                        </div>
+                        <div className="hud-remedy-item">
+                          <span className="hud-remedy-icon">🌿</span>
+                          <span className="hud-remedy-txt">
+                            {activeLanguage === "english"
+                              ? "Place a green plant in North-East to boost health energy flow."
+                              : "सकारात्मक ऊर्जाका लागि उत्तर-पूर्व कुनामा हरियो बिरुवा राख्नुहोस्।"}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
