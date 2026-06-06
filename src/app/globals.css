@@ -1904,13 +1904,22 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
     .step-num { width: 34px; height: 34px; font-size: 0.8rem; }
 
     .room-selector-grid {
+        display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
+        justify-items: stretch;
+    }
+
+    .room-selector-grid .room-card:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+        max-width: 100%;
     }
     
     .room-card {
         padding: 20px 14px;
         border-radius: var(--radius-md);
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .room-icon { font-size: 2rem; margin-bottom: 10px; }
@@ -1920,14 +1929,27 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
     .direction-uploader-grid {
         grid-template-columns: 1fr;
         gap: 14px;
+        justify-items: stretch;
+    }
+    
+    .upload-card {
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .kpi-grid {
         grid-template-columns: 1fr;
         gap: 14px;
+        justify-items: stretch;
     }
 
-    .kpi-card { min-height: 140px; padding: 18px; border-radius: var(--radius-md); }
+    .kpi-card { 
+        min-height: 140px; 
+        padding: 18px; 
+        border-radius: var(--radius-md); 
+        width: 100%;
+        box-sizing: border-box;
+    }
     
     .score-circle-container { width: 100px; height: 100px; }
     .score-text-val { font-size: 1.85rem; }
@@ -1936,6 +1958,8 @@ h3 { font-size: clamp(1rem, 2vw, 1.2rem); }
         flex-direction: column;
         gap: 10px;
         padding: 14px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .sugg-badge { align-self: flex-start; }
